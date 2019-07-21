@@ -96,3 +96,4 @@ derby.log
 
 Dockerfile
 buildAndRun.sh
+*/META-INF/*
