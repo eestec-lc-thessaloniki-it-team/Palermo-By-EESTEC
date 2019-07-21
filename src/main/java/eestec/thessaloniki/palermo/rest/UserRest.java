@@ -32,17 +32,27 @@ public class UserRest {
     @Path("newUser")
     @POST
     public Response createUser(User user){
-        userService.createUser(user);
-        
+        userService.createUser(user);       
         return Response.ok  (user).build();
     }
     
-    @Path("{username}")
+    @Path("logIn")
     @GET
-    public User getUser(@PathParam("username") String username){
-        return userService.findUserByUsername(username);
+    public Response logInUser(User user){
+        User u=userService.findUser(user);
+        if (u != null){
+           return Response.ok(u).build();
+        }else{
+            return Response.status(410, "Wrong username or password").build();
+        }
     }
     
+//    @Path("{username}")
+//    @GET
+//    public User getUser(@PathParam("username") String username){
+//        return userService.findUserByUsername(username);
+//    }
+//    
     @Path("list")
     @GET
     public List<User> getUsers(){

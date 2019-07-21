@@ -23,7 +23,7 @@ public class User {
 
     @PrePersist
     public void init(){
-        this.password=hashPassword(this.password);
+        this.password=hashPassword();
     }
 
     public int getId() {
@@ -71,12 +71,12 @@ public class User {
         this.password = password;
     }
     
-    private String hashPassword(String password){
+    public String hashPassword(){
         String toReturn = null;
 	try {
 	    MessageDigest digest = MessageDigest.getInstance("SHA-512");
 	    digest.reset();
-	    digest.update(password.getBytes("utf8"));
+	    digest.update(this.password.getBytes("utf8"));
 	    toReturn = String.format("%0128x", new BigInteger(1, digest.digest()));
 	} catch (Exception e) {
 	}
