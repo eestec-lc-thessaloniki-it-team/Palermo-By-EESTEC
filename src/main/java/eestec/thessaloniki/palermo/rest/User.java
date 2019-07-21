@@ -9,6 +9,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.PrePersist;
 import javax.persistence.Table;
+import javax.validation.constraints.NotEmpty;
 
 @Entity
 @Table(name = "user")
@@ -17,7 +18,11 @@ public class User {
     @Id
     @GeneratedValue(strategy=GenerationType.IDENTITY)
     private int id;
+    
+    @NotEmpty(message ="Username should be set")
     private String username;
+    
+    @NotEmpty(message = "Password should be set")
     private String password;
 
 
