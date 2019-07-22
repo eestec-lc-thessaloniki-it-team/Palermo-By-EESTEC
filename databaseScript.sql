@@ -14,7 +14,7 @@ CREATE TABLE `palermo`.`user` (
   `leader_id` INT NOT NULL,
   `started` TINYINT(1) NULL DEFAULT 0,
   `random_id` VARCHAR(6) NULL,
-  `started_date` DATETIME NULL,
+  `started_date` TIMESTAMP NULL,
   PRIMARY KEY (`id`),
   UNIQUE INDEX `leader_id_UNIQUE` (`leader_id` ASC),
   UNIQUE INDEX `random_id_UNIQUE` (`random_id` ASC));
