@@ -12,13 +12,13 @@ CREATE TABLE `palermo`.`user` (
   CREATE TABLE `palermo`.`game` (
   `id` INT NOT NULL AUTO_INCREMENT,
   `leader_id` INT NOT NULL,
-  `started` VARCHAR(45) NULL DEFAULT 0,
+  `started` TINYINT(1) NULL DEFAULT 0,
   `random_id` VARCHAR(6) NULL,
   `started_date` DATETIME NULL,
-  UNIQUE INDEX `id_UNIQUE` (`id` ASC),
   PRIMARY KEY (`id`),
   UNIQUE INDEX `leader_id_UNIQUE` (`leader_id` ASC),
-  UNIQUE INDEX `random_number_UNIQUE` (`random_id` ASC));
+  UNIQUE INDEX `random_id_UNIQUE` (`random_id` ASC));
+
 
   
   CREATE TABLE `palermo`.`user_to_game` (
