@@ -1,4 +1,4 @@
-package eestec.thessaloniki.palermo.rest;
+package eestec.thessaloniki.palermo.rest.user;
 
 import java.math.BigInteger;
 import java.security.MessageDigest;

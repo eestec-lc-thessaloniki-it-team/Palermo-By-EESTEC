@@ -3,9 +3,9 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package eestec.thessaloniki.palermo.rest;
+package eestec.thessaloniki.palermo.rest.user;
 
-import eestec.thessaloniki.palermo.rest.User;
+import eestec.thessaloniki.palermo.rest.user.User;
 import java.util.List;
 import javax.inject.Inject;
 import javax.ws.rs.Consumes;

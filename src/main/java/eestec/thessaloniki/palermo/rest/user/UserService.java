@@ -1,6 +1,6 @@
-package eestec.thessaloniki.palermo.rest;
+package eestec.thessaloniki.palermo.rest.user;
 
-import eestec.thessaloniki.palermo.rest.User;
+import eestec.thessaloniki.palermo.rest.user.User;
 import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
