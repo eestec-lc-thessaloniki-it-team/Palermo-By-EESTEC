@@ -28,6 +28,15 @@ public class Game {
         this.started_date=Timestamp.valueOf(LocalDateTime.now());
     }
 
+    public Game(int leader_id) {
+        this.leader_id = leader_id;
+    }
+
+    public Game() {
+    }
+    
+    
+
     public void generateRandomId() {
         String AlphaNumericString = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
                 + "0123456789";

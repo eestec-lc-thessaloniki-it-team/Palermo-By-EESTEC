@@ -23,5 +23,11 @@ public class GameService {
         List<Game> games = query.getResultList();
         return games.get(0);
     }
+    
+    public void deleteGame(Game game){
+        Query query = entityManager.createQuery("DELETE FROM Game g WHERE g.id= :id");
+        query.setParameter("id", game.getId());
+        query.executeUpdate();
+    }
 
 }
