@@ -36,6 +36,12 @@ public class UserService {
         return null;
     }
     
+    public User findUserById(int id){
+        query=entityManager.createQuery("SELECT u FROM User u WHERE u.id= :id");
+        query.setParameter("id", id);
+        return (User) query.getResultList().get(0);
+    }
+    
     public List<User> getUsers(){
         return entityManager.createQuery("SELECT u FROM User u",User.class).getResultList();
         
