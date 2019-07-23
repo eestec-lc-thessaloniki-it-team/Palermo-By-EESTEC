@@ -30,7 +30,8 @@ public class UserToGameService {
     }
     
     public void deleteUsersFromGame(int game_id){
-        Query query=entityManager.createQuery("Delete utg From UserToGame utg where utg.game_id= :game_id");
+        Query query=entityManager.createQuery("Delete From UserToGame utg where utg.game_id= :game_id");
         query.setParameter("game_id", game_id);
+        query.executeUpdate();
     }
 }

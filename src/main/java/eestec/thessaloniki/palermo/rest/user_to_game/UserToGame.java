@@ -12,10 +12,22 @@ public class UserToGame implements Serializable {
     
     @Id
     private int user_id;
-    @Id
+    
     private int game_id;
     private String role_type;
     private boolean is_dead;
+
+    public UserToGame(int user_id, int game_id) {
+        this.user_id = user_id;
+        this.game_id = game_id; 
+    }
+
+    public UserToGame() {
+    }
+    
+    
+    
+    
     
     @PrePersist
     private void init(){
