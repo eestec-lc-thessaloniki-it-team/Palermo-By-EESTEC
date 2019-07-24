@@ -1,12 +1,8 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package eestec.thessaloniki.palermo.rest.user;
 
 import eestec.thessaloniki.palermo.annotations.AuthorizedUser;
 import eestec.thessaloniki.palermo.annotations.UserExists;
+import eestec.thessaloniki.palermo.rest.user_to_game.UserToGameService;
 import eestec.thessaloniki.palermo.rest.user_token.UserToken;
 import eestec.thessaloniki.palermo.rest.user_token.UserTokenService;
 import java.util.List;
@@ -32,6 +28,8 @@ public class UserRest {
     UserService userService;
     @Inject
     UserTokenService userTokenService;
+    @Inject
+    UserToGameService userToGameService;
 
     @Path("newUser")
     @POST
@@ -43,7 +41,7 @@ public class UserRest {
     }
 
     @Path("logIn")
-    @GET
+    @POST
     @AuthorizedUser
     public Response logInUser(User user) {
         User u = userService.findUser(user);
@@ -53,6 +51,20 @@ public class UserRest {
         } else {
             return Response.status(410, "Wrong username or password").build();
         }
+    }
+
+    @Path("logOut")
+    @POST
+    @AuthorizedUser
+    public Response logOutUser(UserToken userToken) {
+        try {
+            userTokenService.deleteUserToken(userToken);
+            userToGameService.logOutUserFromGame(userToken.getUser_id());
+            return Response.ok().build();
+        } catch (Exception anyException) {
+            return Response.serverError().build();
+        }
+
     }
 
     @Path("list")

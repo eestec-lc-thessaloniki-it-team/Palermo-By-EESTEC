@@ -52,6 +52,7 @@ public class UserService {
         return (User) query.getResultList().get(0);
     }
     
+    
     public List<User> getUsers(){
         return entityManager.createQuery("SELECT u FROM User u",User.class).getResultList();
         
