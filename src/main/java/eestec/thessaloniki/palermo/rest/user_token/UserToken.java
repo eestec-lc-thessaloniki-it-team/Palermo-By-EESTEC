@@ -15,7 +15,7 @@ public class UserToken implements Serializable {
     @Id
     private int user_id;
     private String token;
-    private static final SecureRandom secureRandom = new SecureRandom(); //threadsafe
+    private static final SecureRandom secureRandom = new SecureRandom();
     private static final Base64.Encoder base64Encoder = Base64.getUrlEncoder();
 
     public UserToken() {

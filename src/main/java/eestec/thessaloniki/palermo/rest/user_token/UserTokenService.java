@@ -35,7 +35,7 @@ public class UserTokenService {
 
     public boolean isConnected(int user_id) {
         try {
-            entityManager.createQuery("Select ut FROM UserToken ut WHERE ut.user_id= :user_id")
+            UserToken userToken=(UserToken)entityManager.createQuery("Select ut FROM UserToken ut WHERE ut.user_id= :user_id")
                     .setParameter("user_id", user_id).getSingleResult();
             return true;
         } catch (NoResultException exception) {
