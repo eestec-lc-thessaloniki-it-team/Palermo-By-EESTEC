@@ -9,6 +9,7 @@ import javax.inject.Inject;
 import javax.interceptor.AroundInvoke;
 import javax.interceptor.Interceptor;
 import javax.interceptor.InvocationContext;
+import javax.ws.rs.core.Response;
 
 @UserExists
 @Interceptor
@@ -21,21 +22,18 @@ public class UserExistsInterceptor {
     
     @AroundInvoke
     public Object checkIfUserExists(InvocationContext invocationContext) throws Exception{
-        System.out.println("Checking if user exists"); 
         User user;
         User parameter;
         Object[] params=invocationContext.getParameters();
         for (Object param :params){
             if(param.getClass().equals(User.class)){
                 parameter=(User)param;
-                System.out.println(parameter.getUsername());
                 user =userService.findUserByUsername(parameter.getUsername());
                 if (user == null){
-                    System.out.println("No user with that username: "+parameter.getUsername()+" found in the db");
                     return invocationContext.proceed();
                 }else{
                     System.out.println("User with that username: "+parameter.getUsername()+" found in the db");
-                    return null;
+                    return Response.status(406, "Username already exists in the db");
                 }
                 
             }
