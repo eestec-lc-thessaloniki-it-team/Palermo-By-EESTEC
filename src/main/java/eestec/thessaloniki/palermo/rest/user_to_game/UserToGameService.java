@@ -33,4 +33,10 @@ public class UserToGameService {
                 .setParameter("game_id", game_id)
                 .executeUpdate();
     }
+    
+    public void logOutUserFromGame(int user_id){
+        entityManager.createQuery("DELETE FROM UserToGame utg WHERE utg.user_id = :user_id")
+                .setParameter("user_id", user_id)
+                .executeUpdate();
+    }
 }
