@@ -5,14 +5,15 @@
  */
 package eestec.thessaloniki.palermo.rest.user;
 
-import eestec.thessaloniki.palermo.rest.user.User;
+import eestec.thessaloniki.palermo.annotations.UserExists;
+import eestec.thessaloniki.palermo.rest.user_token.UserToken;
+import eestec.thessaloniki.palermo.rest.user_token.UserTokenService;
 import java.util.List;
 import javax.inject.Inject;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -28,12 +29,16 @@ public class UserRest {
     
     @Inject
     UserService userService;
+    @Inject
+    UserTokenService userTokenService;
     
     @Path("newUser")
     @POST
+    @UserExists
     public Response createUser(User user){
-        userService.createUser(user);       
-        return Response.ok  (user).build();
+        userService.createUser(user);
+        UserToken userToken=userTokenService.createUserToken(user.getId());
+        return Response.ok  (userToken).build();
     }
     
     @Path("logIn")

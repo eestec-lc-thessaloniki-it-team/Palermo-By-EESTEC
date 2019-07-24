@@ -2,7 +2,9 @@ package eestec.thessaloniki.palermo.rest.user;
 
 import eestec.thessaloniki.palermo.rest.user.User;
 import java.util.List;
+import javax.enterprise.context.SessionScoped;
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import javax.transaction.Transactional;
@@ -21,15 +23,23 @@ public class UserService {
     }
 
     public User findUserByUsername(String username) {
-        query= entityManager.createQuery("Select u FROM User u WHERE u.username= :username");
-        query.setParameter("username", username);
-        List<User> resultList=query.getResultList();
-        return resultList.get(0);
+        try{
+            return  entityManager.createQuery("Select u FROM User u WHERE u.username= :username",User.class)
+            .setParameter("username", username)
+            .getSingleResult();
+            
+        }catch(NoResultException e){
+            return null;
+        }
+
         
     }
     
     public User findUser(User user){
         User inBaseUser=findUserByUsername(user.getUsername());
+        if(inBaseUser == null){
+            return null;
+        }
         if(inBaseUser.getPassword().equals(user.hashPassword())){
             return inBaseUser;
         }
