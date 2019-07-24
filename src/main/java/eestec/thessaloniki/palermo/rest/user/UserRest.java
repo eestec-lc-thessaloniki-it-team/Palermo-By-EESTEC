@@ -5,6 +5,7 @@
  */
 package eestec.thessaloniki.palermo.rest.user;
 
+import eestec.thessaloniki.palermo.annotations.AuthorizedUser;
 import eestec.thessaloniki.palermo.annotations.UserExists;
 import eestec.thessaloniki.palermo.rest.user_token.UserToken;
 import eestec.thessaloniki.palermo.rest.user_token.UserTokenService;
@@ -26,41 +27,37 @@ import javax.ws.rs.core.Response;
 @Consumes(MediaType.APPLICATION_JSON)
 @Produces(MediaType.APPLICATION_JSON)
 public class UserRest {
-    
+
     @Inject
     UserService userService;
     @Inject
     UserTokenService userTokenService;
-    
+
     @Path("newUser")
     @POST
     @UserExists
-    public Response createUser(User user){
+    public Response createUser(User user) {
         userService.createUser(user);
-        UserToken userToken=userTokenService.createUserToken(user.getId());
-        return Response.ok  (userToken).build();
+        UserToken userToken = userTokenService.createUserToken(user.getId());
+        return Response.ok(userToken).build();
     }
-    
+
     @Path("logIn")
     @GET
-    public Response logInUser(User user){
-        User u=userService.findUser(user);
-        if (u != null){
-           return Response.ok(u).build();
-        }else{
+    @AuthorizedUser
+    public Response logInUser(User user) {
+        User u = userService.findUser(user);
+        if (u != null) {
+            UserToken userToken = userTokenService.createUserToken(userService.findUserByUsername(u.getUsername()).getId());
+            return Response.ok(userToken).build();
+        } else {
             return Response.status(410, "Wrong username or password").build();
         }
     }
-    
-//    @Path("{username}")
-//    @GET
-//    public User getUser(@PathParam("username") String username){
-//        return userService.findUserByUsername(username);
-//    }
-//    
+
     @Path("list")
     @GET
-    public List<User> getUsers(){
+    public List<User> getUsers() {
         return userService.getUsers();
     }
 }
