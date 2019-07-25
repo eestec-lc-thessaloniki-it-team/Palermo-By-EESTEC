@@ -33,7 +33,7 @@ public class UserExistsInterceptor {
                     return invocationContext.proceed();
                 }else{
                     System.out.println("User with that username: "+parameter.getUsername()+" found in the db");
-                    return Response.status(406, "Username already exists in the db");
+                    return Response.status(406, "Username already exists in the db").build();
                 }
                 
             }

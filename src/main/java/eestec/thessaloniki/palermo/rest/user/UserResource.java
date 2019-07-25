@@ -22,7 +22,7 @@ import javax.ws.rs.core.Response;
 @Path("user")
 @Consumes(MediaType.APPLICATION_JSON)
 @Produces(MediaType.APPLICATION_JSON)
-public class UserRest {
+public class UserResource {
 
     @Inject
     UserService userService;
