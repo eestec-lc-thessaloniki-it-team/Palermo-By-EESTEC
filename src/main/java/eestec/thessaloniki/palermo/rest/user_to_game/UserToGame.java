@@ -16,6 +16,7 @@ public class UserToGame implements Serializable {
     private int game_id;
     private String role_type;
     private boolean is_dead;
+    private int votesFromMurderers;
 
     public UserToGame(int user_id, int game_id) {
         this.user_id = user_id;
@@ -65,6 +66,14 @@ public class UserToGame implements Serializable {
 
     public void setIs_dead(boolean is_dead) {
         this.is_dead = is_dead;
+    }
+
+    public int getVotesFromMurderers() {
+        return votesFromMurderers;
+    }
+
+    public void setVotesFromMurderers(int votesFromMurderers) {
+        this.votesFromMurderers = votesFromMurderers;
     }
     
 }

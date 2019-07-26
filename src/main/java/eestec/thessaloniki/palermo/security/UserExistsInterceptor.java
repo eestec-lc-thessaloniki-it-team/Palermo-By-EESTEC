@@ -3,7 +3,6 @@ package eestec.thessaloniki.palermo.security;
 import eestec.thessaloniki.palermo.annotations.UserExists;
 import eestec.thessaloniki.palermo.rest.user.User;
 import eestec.thessaloniki.palermo.rest.user.UserService;
-import java.util.Arrays;
 import javax.annotation.Priority;
 import javax.inject.Inject;
 import javax.interceptor.AroundInvoke;
@@ -33,7 +32,7 @@ public class UserExistsInterceptor {
                     return invocationContext.proceed();
                 }else{
                     System.out.println("User with that username: "+parameter.getUsername()+" found in the db");
-                    return Response.status(406, "Username already exists in the db");
+                    return Response.status(406, "Username already exists in the db").build();
                 }
                 
             }
