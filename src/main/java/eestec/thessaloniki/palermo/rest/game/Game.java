@@ -23,19 +23,17 @@ public class Game {
     private String random_id;
     private Timestamp started_date;
 
-    @PrePersist
-    private void init() {
-        this.started_date=Timestamp.valueOf(LocalDateTime.now());
-    }
-
     public Game(int leader_id) {
         this.leader_id = leader_id;
     }
 
     public Game() {
     }
-    
-    
+
+    @PrePersist
+    private void init() {
+        this.started_date = Timestamp.valueOf(LocalDateTime.now());
+    }
 
     public void generateRandomId() {
         String AlphaNumericString = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
@@ -43,7 +41,7 @@ public class Game {
         StringBuilder sb = new StringBuilder(6);
 
         for (int i = 0; i < 6; i++) {
-            int index  = (int) (AlphaNumericString.length() * Math.random());
+            int index = (int) (AlphaNumericString.length() * Math.random());
             sb.append(AlphaNumericString.charAt(index));
         }
         setRandom_id(sb.toString());
@@ -89,6 +87,5 @@ public class Game {
     public void setRandom_id(String random_id) {
         this.random_id = random_id;
     }
-
 
 }
