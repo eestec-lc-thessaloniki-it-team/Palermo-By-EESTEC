@@ -42,6 +42,10 @@ CREATE TABLE `palermo`.`user_token` (
   PRIMARY KEY (`user_id`),
   UNIQUE INDEX `user_id_UNIQUE` (`user_id` ASC));
 
+ALTER TABLE `palermo`.`user_to_game` 
+ADD COLUMN `votesFromMurderers` INT NULL DEFAULT 0 AFTER `is_dead`;
+
+
 
 
 
