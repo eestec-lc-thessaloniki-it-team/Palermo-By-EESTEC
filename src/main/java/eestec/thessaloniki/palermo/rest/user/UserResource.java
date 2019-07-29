@@ -2,6 +2,7 @@ package eestec.thessaloniki.palermo.rest.user;
 
 import eestec.thessaloniki.palermo.annotations.AuthorizedUser;
 import eestec.thessaloniki.palermo.annotations.UserExists;
+import eestec.thessaloniki.palermo.rest.game.GameService;
 import eestec.thessaloniki.palermo.rest.user_to_game.UserToGameService;
 import eestec.thessaloniki.palermo.rest.user_token.UserToken;
 import eestec.thessaloniki.palermo.rest.user_token.UserTokenService;
@@ -56,7 +57,7 @@ public class UserResource {
     @AuthorizedUser
     public Response logOutUser(UserToken userToken) {
         try {
-            userTokenService.deleteUserToken(userToken);
+            userTokenService.deleteUserToken(userToken);            
             userToGameService.logOutUserFromGame(userToken.getUser_id());
             return Response.ok().build();
         } catch (Exception anyException) {
@@ -77,7 +78,6 @@ public class UserResource {
             return Response.ok().build();
         }catch(Exception exception){
             System.out.println("Problem with deleting user");
-            exception.printStackTrace();
             return Response.serverError().build();
         }
     }
