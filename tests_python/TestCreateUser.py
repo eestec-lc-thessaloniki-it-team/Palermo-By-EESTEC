@@ -1,14 +1,8 @@
+import sys
+
 import requests
 
-
-# serverIP = "127.0.0.1"
-
-
-def printin(isOK, nameTest):
-    if isOK:
-        print(nameTest + "... OK")
-    else:
-        print(nameTest + "... NOT OK")
+from printing import printin
 
 
 def testCreateUser(serverIP, username, password):
@@ -32,9 +26,14 @@ def testCreateUser(serverIP, username, password):
     userID = r.json()
 
     r = requests.post("http://" + serverIP + ":8080/palermo/api/v1/user/logOut", json=userID)
-    printin(r.status_code == 200, "Logging out a already connected User")
+    printin(r.status_code == 200, "Log out")
 
 
-def deletingUser(serverIP, userToken):
+def deletingUser(serverIP, username, password):
+    r = requests.post("http://" + serverIP + ":8080/palermo/api/v1/user/logIn",
+                      json={"username": username, "password": password})
+    if r.status_code != 200: sys.exit("Error with logging to user "+username)
+    userToken = r.json()
+
     r = requests.post("http://" + serverIP + ":8080/palermo/api/v1/user/deleteUser", json=userToken)
-    printin(r.status_code == 200, "Deleting user")
+    if r.status_code != 200: sys.exit("Error with deleting to user "+username)
