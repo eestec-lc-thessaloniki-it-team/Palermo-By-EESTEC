@@ -26,15 +26,16 @@ public class AuthorizedUserInceptor {
     @AroundInvoke
     public Object authorizedUser(InvocationContext invocationContext) throws Exception {
         if (invocationContext.getMethod().getName().equals("logInUser")) {
-            System.out.println("Came here from logIn");
-            // you dont want to be already connected
             User user = (User) invocationContext.getParameters()[0];
-            user = userService.findUserByUsername(user.getUsername());
-            if (userTokenService.isConnected(user.getId())) {
-                return Response.status(409, "Already connected").build();
-            } else {
-                return invocationContext.proceed();
+            if(user.getUsername().equals("") || user.getPassword().equals("")){
+                return Response.status(400).build();
             }
+            User u = userService.findUser(user); 
+            if (u==null){
+                return Response.status(410, "Wrong username or password").build();
+            }
+            return invocationContext.proceed();
+            
         } else {
             //for the rest that we want to be connected and have the same token
             System.out.println("Want to check if my credentials are correct");
@@ -52,7 +53,7 @@ public class AuthorizedUserInceptor {
             }
 
         }
-        return null;
+        return Response.status(400).build();
     }
 
 }

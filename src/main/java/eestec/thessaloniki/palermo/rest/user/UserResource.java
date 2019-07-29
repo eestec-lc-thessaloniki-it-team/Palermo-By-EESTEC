@@ -41,12 +41,14 @@ public class UserResource {
     @AuthorizedUser
     public Response logInUser(User user) {
         User u = userService.findUser(user);
-        if (u != null) {
-            UserToken userToken = userTokenService.createUserToken(userService.findUserByUsername(u.getUsername()).getId());
+        if(userTokenService.isConnected(u.getId())){
+            UserToken userToken=userTokenService.updateToken(u.getId());
             return Response.ok(userToken).build();
-        } else {
-            return Response.status(410, "Wrong username or password").build();
+        }else{
+            UserToken userToken = userTokenService.createUserToken(u.getId());
+            return Response.ok(userToken).build();
         }
+
     }
 
     @Path("logOut")
@@ -61,6 +63,23 @@ public class UserResource {
             return Response.serverError().build();
         }
 
+    }
+    
+    
+    @Path("deleteUser")
+    @POST
+    @AuthorizedUser
+    public Response deleteUser(UserToken userToken){
+        try{
+            userTokenService.deleteUserToken(userToken);
+            userToGameService.logOutUserFromGame(userToken.getUser_id());
+            userService.removeUser(userToken.getUser_id());
+            return Response.ok().build();
+        }catch(Exception exception){
+            System.out.println("Problem with deleting user");
+            exception.printStackTrace();
+            return Response.serverError().build();
+        }
     }
 
     @Path("list")

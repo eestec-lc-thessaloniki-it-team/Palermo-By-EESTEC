@@ -5,6 +5,7 @@ target/
 libs/
 tmp/
 node_modules/
+*/__pycache__/
  
 # OS Files #
 .DS_Store
@@ -60,7 +61,7 @@ nb-configuration.xml
 *.ipr
 *.iws
 .idea/
-atlassian-ide-plugin.xml
+/atlassian-ide-plugin.xml
 
  
 ######################
