@@ -42,5 +42,16 @@ public class UserTokenService {
             return false;
         }
     }
+    
+    public UserToken updateToken(int user_id){
+        UserToken userToken = findById(user_id);
+        userToken.updateToken();
+        entityManager.merge(userToken);
+        return userToken;
+    }
+    
+    public UserToken findById(int user_id){
+        return entityManager.find(UserToken.class, user_id);
+    }
 
 }

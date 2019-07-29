@@ -1,8 +1,6 @@
 package eestec.thessaloniki.palermo.rest.user;
 
-import eestec.thessaloniki.palermo.rest.user.User;
 import java.util.List;
-import javax.enterprise.context.SessionScoped;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
@@ -56,6 +54,11 @@ public class UserService {
     public List<User> getUsers(){
         return entityManager.createQuery("SELECT u FROM User u",User.class).getResultList();
         
+    }
+    
+    public void removeUser(int id){
+        entityManager.createQuery("DELETE FROM User u WHERE u.id = :id")
+                .setParameter("id", id).executeUpdate();
     }
 
 }

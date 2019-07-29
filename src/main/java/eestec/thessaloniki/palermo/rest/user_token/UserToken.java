@@ -55,5 +55,9 @@ public class UserToken implements Serializable {
     public void setToken(String token) {
         this.token = token;
     }
+    
+    public void updateToken(){
+        this.setToken(generateNewToken());
+    }
 
 }

@@ -27,6 +27,9 @@ public class UserExistsInterceptor {
         for (Object param :params){
             if(param.getClass().equals(User.class)){
                 parameter=(User)param;
+                if(parameter.getUsername().equals("") || parameter.getPassword().equals("")){
+                    return Response.status(400).build();
+                }
                 user =userService.findUserByUsername(parameter.getUsername());
                 if (user == null){
                     return invocationContext.proceed();
