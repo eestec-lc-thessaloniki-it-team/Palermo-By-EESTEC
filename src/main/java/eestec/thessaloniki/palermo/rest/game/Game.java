@@ -88,4 +88,10 @@ public class Game {
         this.random_id = random_id;
     }
 
+    @Override
+    public String toString() {
+        return "Game{" + "id=" + id + ", leader_id=" + leader_id + ", started=" + started + ", random_id=" + random_id + ", started_date=" + started_date + '}';
+    }
+
+    
 }

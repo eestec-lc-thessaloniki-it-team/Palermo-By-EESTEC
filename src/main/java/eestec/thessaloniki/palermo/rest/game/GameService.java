@@ -1,9 +1,8 @@
 package eestec.thessaloniki.palermo.rest.game;
 
-import java.util.List;
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
-import javax.persistence.Query;
 import javax.transaction.Transactional;
 
 @Transactional
@@ -18,16 +17,33 @@ public class GameService {
     }
 
     public Game searchGameByRandomId(String random_id) {
-        Query query = entityManager.createQuery("Select g From Game g where g.random_id= :random_id");
-        query.setParameter("random_id", random_id);
-        List<Game> games = query.getResultList();
-        return games.get(0);
+        try {
+            return entityManager.createQuery("Select g From Game g where g.random_id= :random_id", Game.class)
+                    .setParameter("random_id", random_id)
+                    .getSingleResult();
+        } catch (NoResultException e) {
+            return null;
+        }
+    }
+
+    public void deleteGame(Game game) {
+        entityManager.createQuery("DELETE FROM Game g WHERE g.id= :id")
+                .setParameter("id", game.getId())
+                .executeUpdate();
+    }
+
+    public Game searchGameByGameID(int game_id) {
+        try {
+            return entityManager.createQuery("SELECT g FROM Game g WHERE g.id = :id", Game.class)
+                    .setParameter("id", game_id).getSingleResult();
+        } catch (NoResultException e) {
+            return null;
+        }
     }
     
-    public void deleteGame(Game game){
-        Query query = entityManager.createQuery("DELETE FROM Game g WHERE g.id= :id");
-        query.setParameter("id", game.getId());
-        query.executeUpdate();
+    public Game updateGame(Game game){
+        entityManager.merge(game);
+        return game;
     }
 
 }
