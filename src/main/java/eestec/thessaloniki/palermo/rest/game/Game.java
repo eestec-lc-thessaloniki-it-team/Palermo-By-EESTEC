@@ -33,6 +33,7 @@ public class Game {
     @PrePersist
     private void init() {
         this.started_date = Timestamp.valueOf(LocalDateTime.now());
+        started=false;
     }
 
     public void generateRandomId() {

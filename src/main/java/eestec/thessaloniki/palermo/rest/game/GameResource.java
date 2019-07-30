@@ -1,7 +1,7 @@
 package eestec.thessaloniki.palermo.rest.game;
 
 import eestec.thessaloniki.palermo.annotations.AuthorizedUser;
-import eestec.thessaloniki.palermo.rest.user.User;
+import eestec.thessaloniki.palermo.annotations.GameExists;
 import eestec.thessaloniki.palermo.rest.user.UserService;
 import eestec.thessaloniki.palermo.rest.user_to_game.UserToGame;
 import eestec.thessaloniki.palermo.rest.user_to_game.UserToGameService;
@@ -21,6 +21,8 @@ import javax.ws.rs.core.Response;
 @Path("game")
 @Consumes(MediaType.APPLICATION_JSON)
 @Produces(MediaType.APPLICATION_JSON)
+@AuthorizedUser
+@GameExists
 public class GameResource {
 
     @Inject
@@ -34,7 +36,6 @@ public class GameResource {
 
     @Path("newGame")
     @POST
-    @AuthorizedUser
     public Response createGame(UserToken userToken) {
         Game game=new Game(userToken.getUser_id());
         while (true) {
@@ -51,7 +52,6 @@ public class GameResource {
 
     @Path("joinGame/{random_id}")
     @POST
-    @AuthorizedUser
     public Response joinGame(@PathParam("random_id") String random_id,UserToken userToken) {
         Game game = gameService.searchGameByRandomId(random_id);
         userToGameService.addUserToGame(new UserToGame(userToken.getUser_id(),game.getId()));
@@ -69,7 +69,6 @@ public class GameResource {
     
     @Path("getUsers/{random_id}")
     @POST
-    @AuthorizedUser
     public Response getUsersOfGame(@PathParam("random_id") String random_id,UserToken userToken){
         Game game = gameService.searchGameByRandomId(random_id);
         List<Integer> users_id=userToGameService.usersInGame(game.getId());
@@ -79,6 +78,25 @@ public class GameResource {
         }
         return Response.ok(usersList).build();
         
+    }
+    
+    @Path("gameInfo/{random_id}")
+    @POST
+    public Response getGameInfo(@PathParam("random_id")String random_id, UserToken userToken){
+        return Response.ok(gameService.searchGameByRandomId(random_id)).build();
+    }
+    
+    @Path("startGame/{random_id}")
+    @POST
+    public Response startGame(@PathParam("random_id") String random_id,UserToken userToken){
+        Game game = gameService.searchGameByRandomId(random_id);
+        if(game.getLeader_id()==userToken.getUser_id()){
+            game.setStarted(true);
+            gameService.updateGame(game);
+            return Response.ok(game).build();
+        }else{
+            return Response.status(401,"You are not the leader of this game").build();
+        }
     }
 
 }
