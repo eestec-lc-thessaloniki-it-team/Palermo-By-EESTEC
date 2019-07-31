@@ -1,6 +1,6 @@
 package eestec.thessaloniki.palermo.security;
 
-import eestec.thessaloniki.palermo.annotations.AuthorizedUser;
+import eestec.thessaloniki.palermo.annotations.interceptors.AuthorizedUser;
 import eestec.thessaloniki.palermo.rest.user.User;
 import eestec.thessaloniki.palermo.rest.user.UserService;
 import eestec.thessaloniki.palermo.rest.user_token.UserToken;

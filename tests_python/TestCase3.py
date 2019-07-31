@@ -39,12 +39,14 @@ def testCase3(serverIP, username, password, username2, password2):
     r = requests.post("http://" + serverIP + ":8080/palermo/api/v1/game/joinGame/" + gameID + "D", json=userID2)
     printin(r.status_code == 404, "Joining an no-existing game")
 
+    r = requests.post("http://" + serverIP + ":8080/palermo/api/v1/ingame/info/", json=userID2)
+    printin(r.status_code == 404, "Getting info of a non existed game")
+
     r = requests.post("http://" + serverIP + ":8080/palermo/api/v1/game/joinGame/" + gameID, json=userID2)
     if r.status_code != 200: sys.exit("There was an error with joining the correct game")
 
-    r=requests.post("http://" + serverIP + ":8080/palermo/api/v1/game/gameInfo/" + gameID, json=userID1)
+    r = requests.post("http://" + serverIP + ":8080/palermo/api/v1/game/gameInfo/" + gameID, json=userID1)
     printin(r.status_code == 200 and not r.json()['started'], "Game Info request")
-    print(r.json())
 
     r = requests.post("http://" + serverIP + ":8080/palermo/api/v1/game/startGame/" + gameID, json=userID2)
     printin(r.status_code == 401, "A no leader try to start the game")
@@ -55,6 +57,13 @@ def testCase3(serverIP, username, password, username2, password2):
     r = requests.post("http://" + serverIP + ":8080/palermo/api/v1/game/gameInfo/" + gameID, json=userID1)
     printin(r.status_code == 200 and r.json()['started'], "Game Info request")
 
+    r = requests.post("http://" + serverIP + ":8080/palermo/api/v1/ingame/info/", json=userID1)
+    printin(r.status_code == 200 and (r.json()['role_type'] == "Murderer" or r.json()['role_type'] == "Policeman"),
+            "User1 got role")
+
+    r = requests.post("http://" + serverIP + ":8080/palermo/api/v1/ingame/info", json=userID2)
+    printin(r.status_code == 200 and (r.json()['role_type'] == "Murderer" or r.json()['role_type'] == "Policeman"),
+            "User2 got role")
 
     r = requests.post("http://" + serverIP + ":8080/palermo/api/v1/user/logOut", json=userID1)
     if r.status_code != 200: sys.exit("Error with clearing data")

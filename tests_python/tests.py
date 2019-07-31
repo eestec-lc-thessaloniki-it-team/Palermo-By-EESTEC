@@ -8,7 +8,7 @@ serverIP = "127.0.0.1"
 username1="test2"
 password="1234"
 username2="test3"
-#
+
 testCreateUser(serverIP, username1, password)
 userToken = testLogIn(serverIP, username1, password)
 deletingUser(serverIP, username1, password)

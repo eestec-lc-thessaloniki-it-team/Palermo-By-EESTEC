@@ -1,9 +1,4 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-package eestec.thessaloniki.palermo.annotations;
+package eestec.thessaloniki.palermo.annotations.interceptors;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Inherited;
@@ -16,6 +11,6 @@ import javax.interceptor.InterceptorBinding;
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.METHOD,ElementType.TYPE})
 @Inherited
-public @interface GameExists {
+public @interface AuthorizedUser {
     
 }

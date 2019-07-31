@@ -1,7 +1,11 @@
-package eestec.thessaloniki.palermo.rest.game;
+package eestec.thessaloniki.palermo.rest.Resources;
 
-import eestec.thessaloniki.palermo.annotations.AuthorizedUser;
-import eestec.thessaloniki.palermo.annotations.GameExists;
+import eestec.thessaloniki.palermo.annotations.interceptors.AuthorizedUser;
+import eestec.thessaloniki.palermo.annotations.interceptors.GameExists;
+import eestec.thessaloniki.palermo.game_logic.GiveRoles;
+import eestec.thessaloniki.palermo.game_logic.roles.Roles;
+import eestec.thessaloniki.palermo.rest.game.Game;
+import eestec.thessaloniki.palermo.rest.game.GameService;
 import eestec.thessaloniki.palermo.rest.user.UserService;
 import eestec.thessaloniki.palermo.rest.user_to_game.UserToGame;
 import eestec.thessaloniki.palermo.rest.user_to_game.UserToGameService;
@@ -33,6 +37,12 @@ public class GameResource {
     
     @Inject 
     UserService userService;
+    
+    @Inject
+    Roles roles;
+    
+    @Inject
+    GiveRoles giveRoles;
 
     @Path("newGame")
     @POST
@@ -91,6 +101,9 @@ public class GameResource {
     public Response startGame(@PathParam("random_id") String random_id,UserToken userToken){
         Game game = gameService.searchGameByRandomId(random_id);
         if(game.getLeader_id()==userToken.getUser_id()){
+            if(!giveRoles.giveRoles(game.getId())){
+                return Response.status(505,"couldn't give roless").build();
+            }
             game.setStarted(true);
             gameService.updateGame(game);
             return Response.ok(game).build();
