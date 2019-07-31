@@ -1,6 +1,6 @@
 package eestec.thessaloniki.palermo.security;
 
-import eestec.thessaloniki.palermo.annotations.AuthorizedUser;
+import eestec.thessaloniki.palermo.annotations.interceptors.AuthorizedUser;
 import eestec.thessaloniki.palermo.rest.user.User;
 import eestec.thessaloniki.palermo.rest.user.UserService;
 import eestec.thessaloniki.palermo.rest.user_token.UserToken;
@@ -26,6 +26,7 @@ public class AuthorizedUserInceptor {
     @AroundInvoke
     public Object authorizedUser(InvocationContext invocationContext) throws Exception {
         if (invocationContext.getMethod().getName().equals("logInUser")) {
+            System.out.println("Check if username and password given belongs to a user");
             User user = (User) invocationContext.getParameters()[0];
             if (user.getUsername().equals("") || user.getPassword().equals("")) {
                 return Response.status(400).build();
@@ -36,23 +37,21 @@ public class AuthorizedUserInceptor {
             }
             return invocationContext.proceed();
 
-        } else {
-            //for the rest that we want to be connected and have the same token
-            System.out.println("Want to check if my credentials are correct");
-            for (Object param : invocationContext.getParameters()) {
-                System.out.println(param.getClass());
-                if (param.getClass().equals(UserToken.class)) { //finding the UserToken in params
-                    UserToken userToken = (UserToken) param;
-                    System.out.println(userToken.toString());
-                    if (userTokenService.isValid(userToken)) {
-                        return invocationContext.proceed();
-                    } else {
-                        return Response.status(401, "Unauthorized").build();
-                    }
+        }
+        //for the rest that we want to be connected and have the same token
+        System.out.println("Check if credentials are correct");
+        for (Object param : invocationContext.getParameters()) {
+            System.out.println(param.getClass());
+            if (param.getClass().equals(UserToken.class)) { //finding the UserToken in params
+                UserToken userToken = (UserToken) param;              
+                if (userTokenService.isValid(userToken)) {
+                    return invocationContext.proceed();
+                } else {
+                    return Response.status(401, "Unauthorized").build();
                 }
             }
-            return Response.status(400).build();
         }
+        return Response.status(400).build();
 
     }
 

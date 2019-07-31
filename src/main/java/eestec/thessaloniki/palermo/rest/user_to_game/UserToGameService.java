@@ -82,4 +82,9 @@ public class UserToGameService {
                     .executeUpdate();
         }
     }
+    
+    public UserToGame update(UserToGame userToGame){
+        entityManager.merge(userToGame);
+        return userToGame;
+    }
 }

@@ -1,8 +1,11 @@
-package eestec.thessaloniki.palermo.rest.user;
+package eestec.thessaloniki.palermo.rest.Resources;
 
-import eestec.thessaloniki.palermo.annotations.AuthorizedUser;
-import eestec.thessaloniki.palermo.annotations.UserExists;
-import eestec.thessaloniki.palermo.rest.game.GameService;
+import eestec.thessaloniki.palermo.annotations.interceptors.AuthorizedUser;
+import eestec.thessaloniki.palermo.annotations.interceptors.UserExists;
+import eestec.thessaloniki.palermo.game_logic.GiveRoles;
+import eestec.thessaloniki.palermo.game_logic.roles.Roles;
+import eestec.thessaloniki.palermo.rest.user.User;
+import eestec.thessaloniki.palermo.rest.user.UserService;
 import eestec.thessaloniki.palermo.rest.user_to_game.UserToGameService;
 import eestec.thessaloniki.palermo.rest.user_token.UserToken;
 import eestec.thessaloniki.palermo.rest.user_token.UserTokenService;
@@ -27,6 +30,13 @@ public class UserResource {
     UserTokenService userTokenService;
     @Inject
     UserToGameService userToGameService;
+    
+  
+    @Inject
+    Roles roles;
+    
+    @Inject
+    GiveRoles giveRoles;
 
     @Path("newUser")
     @POST

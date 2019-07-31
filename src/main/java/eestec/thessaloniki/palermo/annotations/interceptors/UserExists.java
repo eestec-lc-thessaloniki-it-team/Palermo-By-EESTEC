@@ -1,4 +1,4 @@
-package eestec.thessaloniki.palermo.annotations;
+package eestec.thessaloniki.palermo.annotations.interceptors;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Inherited;

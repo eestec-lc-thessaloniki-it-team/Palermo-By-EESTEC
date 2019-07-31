@@ -1,6 +1,6 @@
 package eestec.thessaloniki.palermo.security;
 
-import eestec.thessaloniki.palermo.annotations.UserExists;
+import eestec.thessaloniki.palermo.annotations.interceptors.UserExists;
 import eestec.thessaloniki.palermo.rest.user.User;
 import eestec.thessaloniki.palermo.rest.user.UserService;
 import javax.annotation.Priority;

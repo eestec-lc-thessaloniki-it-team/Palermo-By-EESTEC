@@ -1,11 +1,11 @@
-package eestec.thessaloniki.palermo.roles;
+package eestec.thessaloniki.palermo.game_logic.roles;
 
 import eestec.thessaloniki.palermo.rest.user.User;
 import eestec.thessaloniki.palermo.rest.user_to_game.UserToGameService;
 import java.util.List;
+import javax.enterprise.inject.Model;
 import javax.inject.Inject;
 import javax.ws.rs.core.Response;
-
 
 public class Role {
     protected String roleName;
@@ -37,6 +37,12 @@ public class Role {
     public String getDescription() {
         return description;
     }
+
+    @Override
+    public String toString() {
+        return "Role{" + "roleName=" + roleName + ", roleTeam=" + roleTeam + '}';
+    }
+    
 
     
     
