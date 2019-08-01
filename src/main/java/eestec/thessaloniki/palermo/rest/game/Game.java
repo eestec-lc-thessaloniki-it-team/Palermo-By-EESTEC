@@ -100,11 +100,13 @@ public class Game {
             this.state="Night";
         }
     }
-    
+
     @Override
     public String toString() {
-        return "Game{" + "id=" + id + ", leader_id=" + leader_id + ", started=" + started + ", random_id=" + random_id + ", started_date=" + created_date + '}';
+        return "Game{" + "id=" + id + ", leader_id=" + leader_id + ", started=" + started + ", random_id=" + random_id + ", created_date=" + created_date + ", state=" + state + '}';
     }
+    
+    
 
     public String getState() {
         return state;
