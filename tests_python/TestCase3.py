@@ -42,20 +42,36 @@ def testCase3(serverIP, username, password, username2, password2):
     r = requests.post("http://" + serverIP + ":8080/palermo/api/v1/ingame/info/", json=userID2)
     printin(r.status_code == 404, "Getting info of a non existed game")
 
+    r = requests.post("http://" + serverIP + ":8080/palermo/api/v1/game/gameInfo", json=userID2)
+    printin(r.status_code == 400, "Ask for gameInfo and you are not connected to a game")
+
     r = requests.post("http://" + serverIP + ":8080/palermo/api/v1/game/joinGame/" + gameID, json=userID2)
     if r.status_code != 200: sys.exit("There was an error with joining the correct game")
 
-    r = requests.post("http://" + serverIP + ":8080/palermo/api/v1/game/gameInfo/" + gameID, json=userID1)
+    r = requests.post("http://" + serverIP + ":8080/palermo/api/v1/game/gameInfo", json=userID1)
     printin(r.status_code == 200 and not r.json()['started'], "Game Info request")
 
-    r = requests.post("http://" + serverIP + ":8080/palermo/api/v1/game/startGame/" + gameID, json=userID2)
+    r = requests.post("http://" + serverIP + ":8080/palermo/api/v1/game/startGame", json=userID2)
     printin(r.status_code == 401, "A no leader try to start the game")
 
-    r = requests.post("http://" + serverIP + ":8080/palermo/api/v1/game/startGame/" + gameID, json=userID1)
+    r = requests.post("http://" + serverIP + ":8080/palermo/api/v1/game/startGame", json=userID1)
+    if r.status_code == 505:
+        print("There was an error while parsing data from roles.txt")
+        return
     printin(r.status_code == 200 and r.json()['started'], "Leader starts the game")
 
-    r = requests.post("http://" + serverIP + ":8080/palermo/api/v1/game/gameInfo/" + gameID, json=userID1)
-    printin(r.status_code == 200 and r.json()['started'], "Game Info request")
+    r = requests.post("http://" + serverIP + ":8080/palermo/api/v1/game/gameInfo", json=userID1)
+    printin(r.status_code == 200 and r.json()['started'] , "Game Info request")
+    printin(r.json()['state'] == "Night","Initial state is Night")
+
+    r = requests.post("http://" + serverIP + ":8080/palermo/api/v1/ingame/nextState", json=userID1)
+    printin(r.status_code == 200 and r.json()['state'] == "Morning", "Second is Morning")
+
+    r = requests.post("http://" + serverIP + ":8080/palermo/api/v1/ingame/nextState", json=userID1)
+    printin(r.status_code == 200 and r.json()['state'] == "Voting", "Third is Voting")
+
+    r = requests.post("http://" + serverIP + ":8080/palermo/api/v1/ingame/nextState", json=userID1)
+    printin(r.status_code == 200 and r.json()['state'] == "Night", "Back to Night after 3 changes")
 
     r = requests.post("http://" + serverIP + ":8080/palermo/api/v1/ingame/info/", json=userID1)
     printin(r.status_code == 200 and (r.json()['role_type'] == "Murderer" or r.json()['role_type'] == "Policeman"),

@@ -1,6 +1,5 @@
 package eestec.thessaloniki.palermo.game_logic;
 
-import eestec.thessaloniki.palermo.game_logic.configurations.ReadConfiguration;
 import eestec.thessaloniki.palermo.rest.user_to_game.UserToGame;
 import eestec.thessaloniki.palermo.rest.user_to_game.UserToGameService;
 import java.util.Collections;
@@ -19,7 +18,9 @@ public class GiveRoles {
     public boolean giveRoles(int game_id) {
         List<Integer> users_id = userToGameService.usersInGame(game_id);
         String[] roles = readConfiGuration.getStringBasedOnNumberOfPlayers(users_id.size());
-
+        if(roles==null){ // in case something was wrong with the parsing
+            return false;
+        }
         return this.giveRoleToPlayers(roles, users_id);
     }
 

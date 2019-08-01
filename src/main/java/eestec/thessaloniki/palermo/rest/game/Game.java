@@ -21,7 +21,8 @@ public class Game {
     private int leader_id;
     private boolean started;
     private String random_id;
-    private Timestamp started_date;
+    private Timestamp created_date;
+    private String state;
 
     public Game(int leader_id) {
         this.leader_id = leader_id;
@@ -32,8 +33,9 @@ public class Game {
 
     @PrePersist
     private void init() {
-        this.started_date = Timestamp.valueOf(LocalDateTime.now());
+        this.created_date = Timestamp.valueOf(LocalDateTime.now());
         started=false;
+        state="Night";
     }
 
     public void generateRandomId() {
@@ -49,12 +51,12 @@ public class Game {
 
     }
 
-    public Timestamp getStarted_date() {
-        return started_date;
+    public Timestamp getCreated_date() {
+        return created_date;
     }
 
-    public void setStarted_date(Timestamp started_date) {
-        this.started_date = started_date;
+    public void setCreated_date(Timestamp created_date) {
+        this.created_date = created_date;
     }
 
     public int getId() {
@@ -89,10 +91,26 @@ public class Game {
         this.random_id = random_id;
     }
 
+    public void nextState(){
+        if(this.state.equals("Night")){
+            this.state="Morning";
+        }else if(this.state.equals("Morning")){
+            this.state="Voting";
+        }else{
+            this.state="Night";
+        }
+    }
+    
     @Override
     public String toString() {
-        return "Game{" + "id=" + id + ", leader_id=" + leader_id + ", started=" + started + ", random_id=" + random_id + ", started_date=" + started_date + '}';
+        return "Game{" + "id=" + id + ", leader_id=" + leader_id + ", started=" + started + ", random_id=" + random_id + ", started_date=" + created_date + '}';
     }
+
+    public String getState() {
+        return state;
+    }
+    
+    
 
     
 }

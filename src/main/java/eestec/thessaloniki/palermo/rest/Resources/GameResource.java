@@ -62,25 +62,26 @@ public class GameResource {
 
     @Path("joinGame/{random_id}")
     @POST
+    
     public Response joinGame(@PathParam("random_id") String random_id,UserToken userToken) {
         Game game = gameService.searchGameByRandomId(random_id);
         userToGameService.addUserToGame(new UserToGame(userToken.getUser_id(),game.getId()));
         return Response.ok(game).build();
     }
     
-    @Path("endGame/{random_id}")
+    @Path("endGame")
     @POST
-    public Response endGame(@PathParam("random_id") String random_id,UserToken userToken){
-        Game game = gameService.searchGameByRandomId(random_id);
+    public Response endGame(UserToken userToken){
+        Game game = this.findGame(userToken.getUser_id());
         userToGameService.deleteUsersFromGame(game.getId());
         gameService.deleteGame(game);
         return Response.ok().build();
     }
     
-    @Path("getUsers/{random_id}")
+    @Path("getUsers")
     @POST
-    public Response getUsersOfGame(@PathParam("random_id") String random_id,UserToken userToken){
-        Game game = gameService.searchGameByRandomId(random_id);
+    public Response getUsersOfGame(UserToken userToken){
+        Game game = this.findGame(userToken.getUser_id());
         List<Integer> users_id=userToGameService.usersInGame(game.getId());
         List<String> usersList = new ArrayList<>();
         for(Integer i :users_id){
@@ -90,16 +91,16 @@ public class GameResource {
         
     }
     
-    @Path("gameInfo/{random_id}")
+    @Path("gameInfo")
     @POST
-    public Response getGameInfo(@PathParam("random_id")String random_id, UserToken userToken){
-        return Response.ok(gameService.searchGameByRandomId(random_id)).build();
+    public Response getGameInfo(UserToken userToken){
+        return Response.ok(this.findGame(userToken.getUser_id())).build();
     }
     
-    @Path("startGame/{random_id}")
+    @Path("startGame")
     @POST
-    public Response startGame(@PathParam("random_id") String random_id,UserToken userToken){
-        Game game = gameService.searchGameByRandomId(random_id);
+    public Response startGame(UserToken userToken){
+        Game game = this.findGame(userToken.getUser_id());
         if(game.getLeader_id()==userToken.getUser_id()){
             if(!giveRoles.giveRoles(game.getId())){
                 return Response.status(505,"couldn't give roless").build();
@@ -110,6 +111,11 @@ public class GameResource {
         }else{
             return Response.status(401,"You are not the leader of this game").build();
         }
+    }
+    
+    private Game findGame(int user_id){
+        int game_id= userToGameService.findByUserId(user_id).getGame_id();
+        return gameService.searchGameByGameID(game_id);
     }
 
 }
