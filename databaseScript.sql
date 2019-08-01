@@ -45,6 +45,11 @@ CREATE TABLE `palermo`.`user_token` (
 ALTER TABLE `palermo`.`user_to_game` 
 ADD COLUMN `votesFromMurderers` INT NULL DEFAULT 0 AFTER `is_dead`;
 
+ALTER TABLE `palermo`.`game` 
+ADD COLUMN `state` VARCHAR(45) NULL DEFAULT NULL AFTER `started_date`;
+CHANGE COLUMN `started_date` `created_date` TIMESTAMP NULL DEFAULT NULL ;
+
+
 
 
 

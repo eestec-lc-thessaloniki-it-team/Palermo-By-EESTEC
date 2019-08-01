@@ -39,7 +39,7 @@ public class GameExistsInterceptor {
                 UserToken userToken = (UserToken) invocationContext.getParameters()[0];
                 try {
                     Game game = gameService.searchGameByGameID(userToGameService.findByUserId(userToken.getUser_id()).getGame_id());
-                } catch (NullPointerException e) {
+                } catch (NullPointerException e) { // couldnt find a record in userToGame table so it will throw a null pointer exception
                     return Response.status(400, "You are not logged in in a game").build();
                 }
             }

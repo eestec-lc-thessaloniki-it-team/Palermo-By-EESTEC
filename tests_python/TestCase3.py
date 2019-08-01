@@ -61,7 +61,17 @@ def testCase3(serverIP, username, password, username2, password2):
     printin(r.status_code == 200 and r.json()['started'], "Leader starts the game")
 
     r = requests.post("http://" + serverIP + ":8080/palermo/api/v1/game/gameInfo", json=userID1)
-    printin(r.status_code == 200 and r.json()['started'], "Game Info request")
+    printin(r.status_code == 200 and r.json()['started'] , "Game Info request")
+    printin(r.json()['state'] == "Night","Initial state is Night")
+
+    r = requests.post("http://" + serverIP + ":8080/palermo/api/v1/ingame/nextState", json=userID1)
+    printin(r.status_code == 200 and r.json()['state'] == "Morning", "Second is Morning")
+
+    r = requests.post("http://" + serverIP + ":8080/palermo/api/v1/ingame/nextState", json=userID1)
+    printin(r.status_code == 200 and r.json()['state'] == "Voting", "Third is Voting")
+
+    r = requests.post("http://" + serverIP + ":8080/palermo/api/v1/ingame/nextState", json=userID1)
+    printin(r.status_code == 200 and r.json()['state'] == "Night", "Back to Night after 3 changes")
 
     r = requests.post("http://" + serverIP + ":8080/palermo/api/v1/ingame/info/", json=userID1)
     printin(r.status_code == 200 and (r.json()['role_type'] == "Murderer" or r.json()['role_type'] == "Policeman"),
