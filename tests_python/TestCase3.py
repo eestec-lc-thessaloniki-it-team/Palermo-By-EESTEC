@@ -52,6 +52,9 @@ def testCase3(serverIP, username, password, username2, password2):
     printin(r.status_code == 401, "A no leader try to start the game")
 
     r = requests.post("http://" + serverIP + ":8080/palermo/api/v1/game/startGame/" + gameID, json=userID1)
+    if r.status_code==505:
+        print("There was an error while parsing data from roles.txt")
+        return
     printin(r.status_code == 200 and r.json()['started'], "Leader starts the game")
 
     r = requests.post("http://" + serverIP + ":8080/palermo/api/v1/game/gameInfo/" + gameID, json=userID1)
