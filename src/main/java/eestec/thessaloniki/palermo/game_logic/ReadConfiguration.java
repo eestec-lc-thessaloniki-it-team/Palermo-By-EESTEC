@@ -59,7 +59,6 @@ public class ReadConfiguration {
 
             for (Role role : roles.getRoles()) {
                 if (line[i].equals(role.getRoleName())) {
-                    System.out.println(role.getRoleName());
                     flag = true;
                     break;
                 }

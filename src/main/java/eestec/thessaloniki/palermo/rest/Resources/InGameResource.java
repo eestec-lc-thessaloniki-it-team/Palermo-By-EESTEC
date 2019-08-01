@@ -6,6 +6,8 @@
 package eestec.thessaloniki.palermo.rest.Resources;
 
 import eestec.thessaloniki.palermo.annotations.interceptors.AuthorizedUser;
+import eestec.thessaloniki.palermo.annotations.interceptors.GameExists;
+import eestec.thessaloniki.palermo.annotations.interceptors.Leader;
 import eestec.thessaloniki.palermo.rest.game.Game;
 import eestec.thessaloniki.palermo.rest.game.GameService;
 import eestec.thessaloniki.palermo.rest.user_to_game.UserToGame;
@@ -23,7 +25,7 @@ import javax.ws.rs.core.Response;
 @Consumes(MediaType.APPLICATION_JSON)
 @Produces(MediaType.APPLICATION_JSON)
 @AuthorizedUser
-//check if he is in game
+@GameExists
 public class InGameResource {
     
     @Inject
@@ -45,7 +47,7 @@ public class InGameResource {
     
     @Path("nextState")
     @POST
-    //has to be the leader of the game
+    @Leader
     //check if you can change the state
     public Response changeState(UserToken userToken){ 
         UserToGame userToGame = userToGameService.findByUserId(userToken.getUser_id());

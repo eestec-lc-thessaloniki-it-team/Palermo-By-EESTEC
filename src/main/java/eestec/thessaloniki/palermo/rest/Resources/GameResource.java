@@ -2,6 +2,7 @@ package eestec.thessaloniki.palermo.rest.Resources;
 
 import eestec.thessaloniki.palermo.annotations.interceptors.AuthorizedUser;
 import eestec.thessaloniki.palermo.annotations.interceptors.GameExists;
+import eestec.thessaloniki.palermo.annotations.interceptors.Leader;
 import eestec.thessaloniki.palermo.game_logic.GiveRoles;
 import eestec.thessaloniki.palermo.game_logic.roles.Roles;
 import eestec.thessaloniki.palermo.rest.game.Game;
@@ -31,23 +32,23 @@ public class GameResource {
 
     @Inject
     GameService gameService;
-    
+
     @Inject
     UserToGameService userToGameService;
-    
-    @Inject 
+
+    @Inject
     UserService userService;
-    
+
     @Inject
     Roles roles;
-    
+
     @Inject
     GiveRoles giveRoles;
 
     @Path("newGame")
     @POST
     public Response createGame(UserToken userToken) {
-        Game game=new Game(userToken.getUser_id());
+        Game game = new Game(userToken.getUser_id());
         while (true) {
             try {
                 game.generateRandomId();
@@ -56,65 +57,63 @@ public class GameResource {
             } catch (ConstraintViolationException exception) {
             }
         }
-        userToGameService.addUserToGame(new UserToGame(game.getLeader_id(),game.getId()));
+        userToGameService.addUserToGame(new UserToGame(game.getLeader_id(), game.getId()));
         return Response.ok(game).build();
     }
 
     @Path("joinGame/{random_id}")
     @POST
-    
-    public Response joinGame(@PathParam("random_id") String random_id,UserToken userToken) {
+
+    public Response joinGame(@PathParam("random_id") String random_id, UserToken userToken) {
         Game game = gameService.searchGameByRandomId(random_id);
-        userToGameService.addUserToGame(new UserToGame(userToken.getUser_id(),game.getId()));
+        userToGameService.addUserToGame(new UserToGame(userToken.getUser_id(), game.getId()));
         return Response.ok(game).build();
     }
-    
+
     @Path("endGame")
     @POST
-    public Response endGame(UserToken userToken){
+    public Response endGame(UserToken userToken) {
         Game game = this.findGame(userToken.getUser_id());
         userToGameService.deleteUsersFromGame(game.getId());
         gameService.deleteGame(game);
         return Response.ok().build();
     }
-    
+
     @Path("getUsers")
     @POST
-    public Response getUsersOfGame(UserToken userToken){
+    public Response getUsersOfGame(UserToken userToken) {
         Game game = this.findGame(userToken.getUser_id());
-        List<Integer> users_id=userToGameService.usersInGame(game.getId());
+        List<Integer> users_id = userToGameService.usersInGame(game.getId());
         List<String> usersList = new ArrayList<>();
-        for(Integer i :users_id){
+        for (Integer i : users_id) {
             usersList.add(userService.findUserById(i).getUsername());
         }
         return Response.ok(usersList).build();
-        
+
     }
-    
+
     @Path("gameInfo")
     @POST
-    public Response getGameInfo(UserToken userToken){
+    public Response getGameInfo(UserToken userToken) {
         return Response.ok(this.findGame(userToken.getUser_id())).build();
     }
-    
+
     @Path("startGame")
     @POST
-    public Response startGame(UserToken userToken){
+    @Leader
+    public Response startGame(UserToken userToken) {
         Game game = this.findGame(userToken.getUser_id());
-        if(game.getLeader_id()==userToken.getUser_id()){
-            if(!giveRoles.giveRoles(game.getId())){
-                return Response.status(505,"couldn't give roless").build();
-            }
-            game.setStarted(true);
-            gameService.updateGame(game);
-            return Response.ok(game).build();
-        }else{
-            return Response.status(401,"You are not the leader of this game").build();
+        if (!giveRoles.giveRoles(game.getId())) {
+            return Response.status(505, "couldn't give roless").build();
         }
+        game.setStarted(true);
+        gameService.updateGame(game);
+        return Response.ok(game).build();
+
     }
-    
-    private Game findGame(int user_id){
-        int game_id= userToGameService.findByUserId(user_id).getGame_id();
+
+    private Game findGame(int user_id) {
+        int game_id = userToGameService.findByUserId(user_id).getGame_id();
         return gameService.searchGameByGameID(game_id);
     }
 

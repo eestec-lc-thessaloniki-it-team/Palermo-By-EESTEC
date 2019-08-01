@@ -39,8 +39,8 @@ def testCase3(serverIP, username, password, username2, password2):
     r = requests.post("http://" + serverIP + ":8080/palermo/api/v1/game/joinGame/" + gameID + "D", json=userID2)
     printin(r.status_code == 404, "Joining an no-existing game")
 
-    r = requests.post("http://" + serverIP + ":8080/palermo/api/v1/ingame/info/", json=userID2)
-    printin(r.status_code == 404, "Getting info of a non existed game")
+    r = requests.post("http://" + serverIP + ":8080/palermo/api/v1/ingame/info", json=userID2)
+    printin(r.status_code == 400, "Getting info of a non existed game")
 
     r = requests.post("http://" + serverIP + ":8080/palermo/api/v1/game/gameInfo", json=userID2)
     printin(r.status_code == 400, "Ask for gameInfo and you are not connected to a game")
@@ -72,6 +72,9 @@ def testCase3(serverIP, username, password, username2, password2):
 
     r = requests.post("http://" + serverIP + ":8080/palermo/api/v1/ingame/nextState", json=userID1)
     printin(r.status_code == 200 and r.json()['state'] == "Night", "Back to Night after 3 changes")
+
+    r = requests.post("http://" + serverIP + ":8080/palermo/api/v1/ingame/nextState", json=userID2)
+    printin(r.status_code == 401, "A no leader try to change the state")
 
     r = requests.post("http://" + serverIP + ":8080/palermo/api/v1/ingame/info/", json=userID1)
     printin(r.status_code == 200 and (r.json()['role_type'] == "Murderer" or r.json()['role_type'] == "Policeman"),
