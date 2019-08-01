@@ -35,19 +35,21 @@ def testcase2(serverIP, username, password, username2, password2):
     gameID = r.json()['random_id']
     leaderID = r.json()['leader_id']
 
-    r = requests.post("http://" + serverIP + ":8080/palermo/api/v1/game/getUsers/" + gameID, json=userID1)
+    r = requests.post("http://" + serverIP + ":8080/palermo/api/v1/game/getUsers", json=userID1)
     printin(r.status_code == 200 and len(r.json()) == 1 and r.json()[0] == username,
             "Getting users in game when I am solo")
 
     r = requests.post("http://" + serverIP + ":8080/palermo/api/v1/game/joinGame/" + gameID, json=userID2)
     printin(r.status_code == 200, "Joining a game")
 
-    r = requests.post("http://" + serverIP + ":8080/palermo/api/v1/game/getUsers/" + gameID, json=userID1)
+    r = requests.post("http://" + serverIP + ":8080/palermo/api/v1/game/getUsers", json=userID1)
     printin(r.status_code == 200 and len(r.json()) == 2, "Getting users after a joining")
 
     r = requests.post("http://" + serverIP + ":8080/palermo/api/v1/user/logOut", json=userID2)
     if r.status_code != 200: sys.exit("Error with logging out")
-    r = requests.post("http://" + serverIP + ":8080/palermo/api/v1/game/getUsers/" + gameID, json=userID1)
+
+
+    r = requests.post("http://" + serverIP + ":8080/palermo/api/v1/game/getUsers", json=userID1)
     printin(r.status_code == 200 and len(r.json()) == 1 and r.json()[0] == username,
             "Logging out removing a player from a game")
 
@@ -55,12 +57,12 @@ def testcase2(serverIP, username, password, username2, password2):
                       json={"username": username2, "password": password2})
     userID2=r.json()
     r = requests.post("http://" + serverIP + ":8080/palermo/api/v1/game/joinGame/" + gameID, json=userID2)
-    r = requests.post("http://" + serverIP + ":8080/palermo/api/v1/game/getUsers/" + gameID, json=userID1)
+    r = requests.post("http://" + serverIP + ":8080/palermo/api/v1/game/getUsers", json=userID1)
     printin(r.status_code == 200 and len(r.json()) == 2, "After rejoing should be 2 again")
 
     r = requests.post("http://" + serverIP + ":8080/palermo/api/v1/user/logOut", json=userID1)
     if r.status_code != 200: sys.exit("Error with logging out")
-    r = requests.post("http://" + serverIP + ":8080/palermo/api/v1/game/getUsers/" + gameID, json=userID2)
+    r = requests.post("http://" + serverIP + ":8080/palermo/api/v1/game/getUsers", json=userID2)
     printin(r.status_code == 200 and len(r.json()) == 1 and r.json()[0] == username2,
             "After leaving the leader, but one exists in game")
 
