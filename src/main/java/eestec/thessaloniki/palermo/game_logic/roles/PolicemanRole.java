@@ -19,7 +19,7 @@ public class PolicemanRole extends Role {
     }
 
     @Override
-    protected Response action(List<User> users) {
+    public Response action(List<User> users) {
          //Askes if a user is  murderer
          UserToGame askingForUser=userToGameService.findByUserId(users.get(0).getId());
          boolean isMurderer=false;

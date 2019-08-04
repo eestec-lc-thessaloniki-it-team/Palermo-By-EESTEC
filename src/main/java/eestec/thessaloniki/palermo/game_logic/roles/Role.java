@@ -17,8 +17,13 @@ public class Role {
     public Role() {
     }
     
-    protected Response action(List<User> users){
+    public Response action(List<User> users){
         //This will be override by every role 
+        return Response.ok().build();
+    }
+    
+    public Response info(){
+        //This will be override by any role that has to ask for info, like murderer and prostitude
         return Response.ok().build();
     }
     

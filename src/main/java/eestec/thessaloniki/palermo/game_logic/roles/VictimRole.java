@@ -16,7 +16,7 @@ public class VictimRole extends Role{
     }
 
     @Override
-    protected Response action(List<User> users) {
+    public Response action(List<User> users) {
         //Thanks for your cooperation :P :P
         return Response.ok().build(); 
     }
