@@ -11,7 +11,6 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.inject.Inject;
 import javax.ws.rs.core.Response;
-
 /**
  *
  * This will be responsible for events that will take place in night state
@@ -26,6 +25,15 @@ public class NightService {
 
     @Inject
     private Roles roles;
+    
+    public Response getRoleJson(UserToken userToken){
+        UserToGame userToGame = userToGameService.findByUserId(userToken.getUser_id());
+        Role role = this.getUsersRole(userToGame);
+        if (role == null) {
+            return Response.status(510, "Error with finding the role of the user").build();
+        }
+        return Response.ok(role.getRoleJson()).build();
+    }
 
     public Response act(UserToken userToken, List<String> usernames) {
         UserToGame userToGame = userToGameService.findByUserId(userToken.getUser_id());
@@ -55,8 +63,6 @@ public class NightService {
     
 
     private Role getUsersRole(UserToGame userToGame) {
-
-        Role role;
         for (Role r : roles.getRoles()) {
             if (r.getRoleName().equals(userToGame.getRole_type())) {
                 return r;

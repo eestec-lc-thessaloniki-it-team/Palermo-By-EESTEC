@@ -8,6 +8,7 @@ package eestec.thessaloniki.palermo.rest.Resources;
 import eestec.thessaloniki.palermo.annotations.interceptors.AuthorizedUser;
 import eestec.thessaloniki.palermo.annotations.interceptors.GameExists;
 import eestec.thessaloniki.palermo.annotations.interceptors.Leader;
+import eestec.thessaloniki.palermo.game_logic.NightService;
 import eestec.thessaloniki.palermo.rest.game.Game;
 import eestec.thessaloniki.palermo.rest.game.GameService;
 import eestec.thessaloniki.palermo.rest.user_to_game.UserToGame;
@@ -19,6 +20,7 @@ import javax.json.JsonObjectBuilder;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -35,6 +37,9 @@ public class InGameResource {
     
     @Inject
     UserToGameService userToGameService;
+    
+    @Inject
+    NightService nightService;
     
     @Path("info")
     @POST
@@ -68,6 +73,23 @@ public class InGameResource {
         JsonObjectBuilder jsonObjectBuilder= Json.createObjectBuilder()
                  .add("state", game.getState());
         return Response.ok(jsonObjectBuilder.build()).build(); //this might have a problem didn't test it
+    }
+    
+    @Path("roleInfo")
+    @POST
+    public Response getRoleJson(UserToken userToken){
+        return nightService.getRoleJson(userToken);
+    }
+    
+    @Path("act/{usernames}")
+    @POST
+    public Response act(UserToken userToken,@PathParam("usernames")String usernames ){
+        System.out.println("Here is act...........");
+        String[] users=usernames.split(",");
+        System.out.println(users[0]);
+        System.out.println(userToken.toString());
+        return Response.ok().build();
+//        return nightService.act(userToken, usernames);
     }
     
     

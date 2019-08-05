@@ -3,8 +3,10 @@ package eestec.thessaloniki.palermo.game_logic.roles;
 import eestec.thessaloniki.palermo.rest.user.User;
 import eestec.thessaloniki.palermo.rest.user_to_game.UserToGameService;
 import java.util.List;
-import javax.enterprise.inject.Model;
 import javax.inject.Inject;
+import javax.json.Json;
+import javax.json.JsonObject;
+import javax.json.JsonObjectBuilder;
 import javax.ws.rs.core.Response;
 
 public class Role {
@@ -45,7 +47,13 @@ public class Role {
 
     @Override
     public String toString() {
-        return "Role{" + "roleName=" + roleName + ", roleTeam=" + roleTeam + '}';
+        return "Role{" + "roleName=" + roleName + ", roleTeam=" + roleTeam + ", description=" + description + '}';
+    }
+
+    public JsonObject getRoleJson(){
+        JsonObjectBuilder jsonObjectBuilder= Json.createObjectBuilder()
+                 .add("roleName",this.roleName).add("roleTeam", this.roleTeam.toString()).add("description", this.description);
+        return jsonObjectBuilder.build();
     }
     
 

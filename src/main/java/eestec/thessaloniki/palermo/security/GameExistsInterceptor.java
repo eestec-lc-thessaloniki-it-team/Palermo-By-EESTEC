@@ -29,6 +29,11 @@ public class GameExistsInterceptor {
     @AroundInvoke
     public Object checkIfGameExists(InvocationContext invocationContext) throws Exception {
         System.out.println("Check if Game exists: " + invocationContext.getMethod().getName());
+        
+        if(invocationContext.getMethod().getName().equals("act")){ // we will check how we will modifie it to make act work
+            return invocationContext.proceed();
+        }
+        
         if (invocationContext.getMethod().getDeclaringClass().equals(GameResource.class)) {
             return this.checkInGameResource(invocationContext);
         } else {

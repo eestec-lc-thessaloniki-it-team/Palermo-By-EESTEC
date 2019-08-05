@@ -60,4 +60,11 @@ public class UserToken implements Serializable {
         this.setToken(generateNewToken());
     }
 
+    @Override
+    public String toString() {
+        return "UserToken{" + "user_id=" + user_id + ", token=" + token + '}';
+    }
+    
+    
+
 }

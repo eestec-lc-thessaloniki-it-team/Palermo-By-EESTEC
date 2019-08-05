@@ -25,6 +25,11 @@ public class AuthorizedUserInceptor {
 
     @AroundInvoke
     public Object authorizedUser(InvocationContext invocationContext) throws Exception {
+        System.out.println("Authorized user from method " + invocationContext.getMethod().getName());
+        if (invocationContext.getMethod().getName().equals("act")) { // we will check how we will modifie it to make act work
+            return invocationContext.proceed();
+        }
+
         if (invocationContext.getMethod().getName().equals("logInUser")) {
             System.out.println("Check if username and password given belongs to a user");
             User user = (User) invocationContext.getParameters()[0];
@@ -43,7 +48,7 @@ public class AuthorizedUserInceptor {
         for (Object param : invocationContext.getParameters()) {
             System.out.println(param.getClass());
             if (param.getClass().equals(UserToken.class)) { //finding the UserToken in params
-                UserToken userToken = (UserToken) param;              
+                UserToken userToken = (UserToken) param;
                 if (userTokenService.isValid(userToken)) {
                     return invocationContext.proceed();
                 } else {
