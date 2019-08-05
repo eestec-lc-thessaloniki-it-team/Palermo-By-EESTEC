@@ -14,6 +14,8 @@ import eestec.thessaloniki.palermo.rest.user_to_game.UserToGame;
 import eestec.thessaloniki.palermo.rest.user_to_game.UserToGameService;
 import eestec.thessaloniki.palermo.rest.user_token.UserToken;
 import javax.inject.Inject;
+import javax.json.Json;
+import javax.json.JsonObjectBuilder;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -56,6 +58,16 @@ public class InGameResource {
         gameService.updateGame(game);
         return Response.ok(game).build();
         
+    }
+    
+    @Path("state")
+    @POST
+    public Response getState(UserToken userToken){
+        UserToGame userToGame = userToGameService.findByUserId(userToken.getUser_id());
+        Game game =gameService.searchGameByGameID(userToGame.getGame_id());
+        JsonObjectBuilder jsonObjectBuilder= Json.createObjectBuilder()
+                 .add("state", game.getState());
+        return Response.ok(jsonObjectBuilder.build()).build(); //this might have a problem didn't test it
     }
     
     
