@@ -2,20 +2,31 @@ package eestec.thessaloniki.palermo.game_logic.roles;
 
 import java.util.ArrayList;
 import java.util.List;
+import javax.annotation.PostConstruct;
+import javax.inject.Inject;
 
 public class Roles {
 
     private List<Role> roles;
+    
+    @Inject
+    MurdererRole murderer;
+    
+    @Inject
+    VictimRole victim;
+    
+    @Inject
+    PolicemanRole policeman;
 
     public Roles() {
         this.roles = new ArrayList<>();
-        initializeList();
     }
 
+    @PostConstruct
     private void initializeList() {
-        this.roles.add(new MurdererRole());
-        this.roles.add(new VictimRole());
-        this.roles.add(new PolicemanRole());
+        this.roles.add(victim);
+        this.roles.add(murderer);
+        this.roles.add(policeman);
     }
     
     public List<Role> getRoles(){

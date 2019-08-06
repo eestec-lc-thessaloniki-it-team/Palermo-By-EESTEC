@@ -11,9 +11,13 @@ import eestec.thessaloniki.palermo.annotations.interceptors.Leader;
 import eestec.thessaloniki.palermo.game_logic.NightService;
 import eestec.thessaloniki.palermo.rest.game.Game;
 import eestec.thessaloniki.palermo.rest.game.GameService;
+import eestec.thessaloniki.palermo.rest.user.User;
 import eestec.thessaloniki.palermo.rest.user_to_game.UserToGame;
 import eestec.thessaloniki.palermo.rest.user_to_game.UserToGameService;
 import eestec.thessaloniki.palermo.rest.user_token.UserToken;
+import eestec.thessaloniki.palermo.wrappers.WrapperUserTokenListIds;
+import java.util.Arrays;
+import java.util.List;
 import javax.inject.Inject;
 import javax.json.Json;
 import javax.json.JsonObjectBuilder;
@@ -81,16 +85,20 @@ public class InGameResource {
         return nightService.getRoleJson(userToken);
     }
     
-    @Path("act/{usernames}")
+    
+    @Path("act")
     @POST
-    public Response act(UserToken userToken,@PathParam("usernames")String usernames ){
-        System.out.println("Here is act...........");
-        String[] users=usernames.split(",");
-        System.out.println(users[0]);
-        System.out.println(userToken.toString());
-        return Response.ok().build();
-//        return nightService.act(userToken, usernames);
+    public Response act(WrapperUserTokenListIds wrapper ){
+        return nightService.act(wrapper.getUserToken(), wrapper.getIds());
     }
+    
+    @Path("nightInfo")
+    @POST
+    public Response nightInfo(UserToken userToken){
+        return nightService.info(userToken);
+        
+    }
+
     
     
 }

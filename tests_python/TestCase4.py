@@ -91,12 +91,26 @@ def testCase4(serverIP, username, password, username2, password2, username3, pas
     else:
         policeman = userID3
 
-    # up untill here we should have all the available roles
+    # up until here we should have all the available roles
     # Test actions
-    usernames = {"usernames": [username2]}
-    r = requests.post("http://" + serverIP + ":8080/palermo/api/v1/ingame/act/test2,test3", json=victim)
-    if r.status_code == 200:
-        print(r.status_code)
+    r = requests.post("http://" + serverIP + ":8080/palermo/api/v1/ingame/act",
+                      json={"userToken": victim, "ids": [policeman["user_id"]]})
+    printin(r.status_code == 200, "Victim is taking an action")
+
+    r = requests.post("http://" + serverIP + ":8080/palermo/api/v1/ingame/act",
+                      json={"userToken": policeman, "ids": [victim["user_id"]]})
+    printin(r.status_code == 200 and not r.json()["isMurderer"], "Policeman asked for a Victim")
+
+    r = requests.post("http://" + serverIP + ":8080/palermo/api/v1/ingame/act",
+                      json={"userToken": policeman, "ids": [murderer["user_id"]]})
+    printin(r.status_code == 200 and r.json()["isMurderer"], "Policeman asked for a Murderer")
+
+    r = requests.post("http://" + serverIP + ":8080/palermo/api/v1/ingame/act",
+                      json={"userToken": murderer, "ids": [policeman["user_id"]]})
+    printin(r.status_code == 200 and r.json()["votesFromMurderers"] == 1, "Murderer vote a player to die")
+
+    r = requests.post("http://" + serverIP + ":8080/palermo/api/v1/ingame/nightInfo",
+                      json=murderer)
 
     r = requests.post("http://" + serverIP + ":8080/palermo/api/v1/user/logOut", json=userID1)
     if r.status_code != 200: sys.exit("Error with clearing data")

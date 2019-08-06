@@ -1,6 +1,6 @@
 package eestec.thessaloniki.palermo.game_logic.roles;
 
-import eestec.thessaloniki.palermo.rest.user.User;
+import eestec.thessaloniki.palermo.rest.user_to_game.UserToGame;
 import eestec.thessaloniki.palermo.rest.user_to_game.UserToGameService;
 import java.util.List;
 import javax.inject.Inject;
@@ -9,22 +9,24 @@ import javax.json.JsonObject;
 import javax.json.JsonObjectBuilder;
 import javax.ws.rs.core.Response;
 
+
 public class Role {
     protected String roleName;
     protected RoleTeam roleTeam;
     protected String description;
+
     @Inject
-    UserToGameService userToGameService;
+    protected UserToGameService userToGameService;
 
     public Role() {
     }
     
-    public Response action(List<User> users){
+    public Response action(List<UserToGame> users){
         //This will be override by every role 
         return Response.ok().build();
     }
     
-    public Response info(){
+    public Response info(UserToGame userToGame){
         //This will be override by any role that has to ask for info, like murderer and prostitude
         return Response.ok().build();
     }

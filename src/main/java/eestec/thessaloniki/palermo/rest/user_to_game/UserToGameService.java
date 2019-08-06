@@ -45,9 +45,9 @@ public class UserToGameService {
         }
     }
 
-    public List<UserToGame> getAllPlayesOfType(String roleType) {
-        return entityManager.createQuery("SELECT utg FROM UserToGame utg WHERE utg.role_type= :role_type", UserToGame.class)
-                .setParameter("role_type", roleType)
+    public List<UserToGame> getAllPlayesOfType(String roleType, int game_id) {
+        return entityManager.createQuery("SELECT utg FROM UserToGame utg WHERE utg.role_type= :role_type AND utg.game_id= :game_id", UserToGame.class)
+                .setParameter("role_type", roleType).setParameter("game_id", game_id)
                 .getResultList();
     }
 

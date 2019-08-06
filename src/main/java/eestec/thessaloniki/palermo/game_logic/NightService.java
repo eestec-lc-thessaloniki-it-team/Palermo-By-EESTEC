@@ -35,15 +35,21 @@ public class NightService {
         return Response.ok(role.getRoleJson()).build();
     }
 
-    public Response act(UserToken userToken, List<String> usernames) {
+    public Response act(UserToken userToken, List<Integer> ids) {
+        System.out.println("In night state act");
+        
         UserToGame userToGame = userToGameService.findByUserId(userToken.getUser_id());
         Role role = this.getUsersRole(userToGame);
+        
+        System.out.println("Role is "+role.getRoleName());
         if (role == null) {
             return Response.status(510, "Error with finding the role of the user").build();
         }
         try {
-            return role.action(this.getUsers(userToGame, usernames));
+            
+            return role.action(this.getUsers(userToGame, ids));
         } catch (NullPointerException e) {
+            e.printStackTrace();
             return Response.status(400).build();
         }
     }
@@ -55,7 +61,7 @@ public class NightService {
             return Response.status(510, "Error with finding the role of the user").build();
         }
         try {
-            return role.info();
+            return role.info(userToGame);
         } catch (NullPointerException e) {
             return Response.status(400).build();
         }
@@ -71,13 +77,13 @@ public class NightService {
         return null;
     }
 
-    private List<User> getUsers(UserToGame userToGame, List<String> usernames) {
-        List<User> users = new ArrayList<>();
-        User u;
+    private List<UserToGame> getUsers(UserToGame userToGame, List<Integer> ids) {
+        List<UserToGame> users = new ArrayList<>();
+        UserToGame u;
         try {
-            for (String username : usernames) {
-                u = userService.findUserByUsername(username);
-                if (userToGameService.findByUserId(u.getId()).getGame_id() == userToGame.getGame_id()) {
+            for (Integer id : ids) {
+                u = userToGameService.findByUserId(id);
+                if (u.getGame_id() == userToGame.getGame_id()) {
                     users.add(u);
                 } else {
                     return null;

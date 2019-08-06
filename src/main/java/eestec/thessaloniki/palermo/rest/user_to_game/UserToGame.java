@@ -24,17 +24,15 @@ public class UserToGame implements Serializable {
     }
 
     public UserToGame() {
-    }
-    
-    
-    
-    
+    } 
     
     @PrePersist
     private void init(){
         this.role_type="";
         this.is_dead=false;
+        this.votesFromMurderers=0;
     }
+    
 
     public int getUser_id() {
         return user_id;
@@ -75,5 +73,11 @@ public class UserToGame implements Serializable {
     public void setVotesFromMurderers(int votesFromMurderers) {
         this.votesFromMurderers = votesFromMurderers;
     }
+
+    @Override
+    public String toString() {
+        return "UserToGame{" + "user_id=" + user_id + ", game_id=" + game_id + ", role_type=" + role_type + ", is_dead=" + is_dead + ", votesFromMurderers=" + votesFromMurderers + '}';
+    }
+    
     
 }
