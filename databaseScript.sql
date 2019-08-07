@@ -49,6 +49,20 @@ ALTER TABLE `palermo`.`game`
 ADD COLUMN `state` VARCHAR(45) NULL DEFAULT NULL AFTER `started_date`;
 CHANGE COLUMN `started_date` `created_date` TIMESTAMP NULL DEFAULT NULL ;
 
+ALTER TABLE `palermo`.`vote` 
+CHANGE COLUMN `game_id` `game_id` INT NOT NULL ,
+DROP PRIMARY KEY,
+ADD PRIMARY KEY (`user_id`);
+
+ALTER TABLE `palermo`.`game` 
+ADD COLUMN `last_modified` TIMESTAMP NULL AFTER `state`;
+
+ALTER TABLE `palermo`.`user_to_game` 
+ADD COLUMN `isDeadVisible` TINYINT(1) NULL AFTER `votesFromMurderers`,
+ADD COLUMN `actedAtNight` TINYINT(1) NULL AFTER `isDeadVisible`;
+
+
+
 
 
 

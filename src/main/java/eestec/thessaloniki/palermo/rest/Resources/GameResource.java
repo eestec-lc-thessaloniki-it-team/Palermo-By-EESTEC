@@ -5,6 +5,7 @@ import eestec.thessaloniki.palermo.annotations.interceptors.GameExists;
 import eestec.thessaloniki.palermo.annotations.interceptors.Leader;
 import eestec.thessaloniki.palermo.game_logic.GiveRoles;
 import eestec.thessaloniki.palermo.game_logic.roles.Roles;
+import eestec.thessaloniki.palermo.game_logic.states.ChangeStates;
 import eestec.thessaloniki.palermo.rest.game.Game;
 import eestec.thessaloniki.palermo.rest.game.GameService;
 import eestec.thessaloniki.palermo.rest.user.UserService;
@@ -44,6 +45,9 @@ public class GameResource {
 
     @Inject
     GiveRoles giveRoles;
+    
+    @Inject
+    ChangeStates changeStates;
 
     @Path("newGame")
     @POST
@@ -102,12 +106,13 @@ public class GameResource {
     @POST
     @Leader
     public Response startGame(UserToken userToken) {
-        Game game = this.findGame(userToken.getUser_id());
+        Game game = this.findGame(userToken.getUser_id());      
         if (!giveRoles.giveRoles(game.getId())) {
             return Response.status(505, "couldn't give roless").build();
         }
         game.setStarted(true);
         gameService.updateGame(game);
+         changeStates.changeStateTo("Night", userToGameService.findByUserId(userToken.getUser_id()));
         return Response.ok(game).build();
 
     }

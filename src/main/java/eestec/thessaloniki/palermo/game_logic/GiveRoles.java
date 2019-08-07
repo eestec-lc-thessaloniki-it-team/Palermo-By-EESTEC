@@ -4,7 +4,6 @@ import eestec.thessaloniki.palermo.rest.user_to_game.UserToGame;
 import eestec.thessaloniki.palermo.rest.user_to_game.UserToGameService;
 import java.util.Collections;
 import java.util.List;
-import java.util.Random;
 import javax.inject.Inject;
 
 public class GiveRoles {
@@ -26,8 +25,7 @@ public class GiveRoles {
 
     private boolean giveRoleToPlayers(String[] rolesFromConfiguration, List<Integer> users_id) {
         System.out.println("I want to give roles, these are the roles...");
-        Random rand = new Random();
-        Collections.shuffle(users_id, new Random(rand.nextInt()));
+        Collections.shuffle(users_id);
         UserToGame userToGame;
         int counter = 1;
         try {

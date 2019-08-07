@@ -23,6 +23,7 @@ public class Game {
     private String random_id;
     private Timestamp created_date;
     private String state;
+    private Timestamp last_modified;
 
     public Game(int leader_id) {
         this.leader_id = leader_id;
@@ -34,8 +35,9 @@ public class Game {
     @PrePersist
     private void init() {
         this.created_date = Timestamp.valueOf(LocalDateTime.now());
-        started=false;
-        state="Night";
+        this.last_modified=Timestamp.valueOf(LocalDateTime.now());
+        started = false;
+        state = "Night";
     }
 
     public void generateRandomId() {
@@ -91,28 +93,31 @@ public class Game {
         this.random_id = random_id;
     }
 
-    public void nextState(){
-        if(this.state.equals("Night")){
-            this.state="Morning";
-        }else if(this.state.equals("Morning")){
-            this.state="Voting";
-        }else{
-            this.state="Night";
+    public void nextState() {
+        if (this.state.equals("Night")) {
+            this.state = "Morning";
+        } else if (this.state.equals("Morning")) {
+            this.state = "Voting";
+        } else {
+            this.state = "Night";
         }
+    }
+
+    public Timestamp getLast_modified() {
+        return last_modified;
+    }
+
+    public void setLast_modified(Timestamp last_modified) {
+        this.last_modified = last_modified;
     }
 
     @Override
     public String toString() {
         return "Game{" + "id=" + id + ", leader_id=" + leader_id + ", started=" + started + ", random_id=" + random_id + ", created_date=" + created_date + ", state=" + state + '}';
     }
-    
-    
 
     public String getState() {
         return state;
     }
-    
-    
 
-    
 }

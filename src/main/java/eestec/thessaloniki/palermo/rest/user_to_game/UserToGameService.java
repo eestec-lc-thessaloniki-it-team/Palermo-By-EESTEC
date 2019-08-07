@@ -25,9 +25,7 @@ public class UserToGameService {
     }
 
     public List<Integer> usersInGame(int game_id) {
-        List<UserToGame> users_to_game = entityManager.createQuery("Select utg From UserToGame utg where utg.game_id= :game_id")
-                .setParameter("game_id", game_id)
-                .getResultList();
+        List<UserToGame> users_to_game = this.userToGameList(game_id);
         List<Integer> users_id = new ArrayList<>();
         users_to_game.forEach((utg) -> {
             users_id.add(utg.getUser_id());
@@ -35,19 +33,45 @@ public class UserToGameService {
         return users_id;
     }
 
-    public void voteUser(int user_id) {
+    public boolean initializeActedAtNight(int game_id) {
         try {
-            UserToGame userToGame = entityManager.createQuery("SELECT utg FROM UserToGame utg WHERE utg.user_id= :user_id", UserToGame.class)
-                    .setParameter("user_id", user_id).getSingleResult();
-            userToGame.setVotesFromMurderers(userToGame.getVotesFromMurderers() + 1);
-            entityManager.merge(userToGame);
-        } catch (NoResultException e) {
+            for (UserToGame utg : this.userToGameList(game_id)) {
+                if (utg.getRole_type().equals("Victim")) { //victims no need to take actions
+                    utg.setActedAtNight(true);
+                } else {
+                    utg.setActedAtNight(false);
+                }
+                utg.setVotesFromMurderers(0);
+                this.update(utg);
+            }
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
         }
     }
+    
+    public List<UserToGame> getDeadPlayers(UserToGame userToGame){
+        List<UserToGame> users= this.userToGameList(userToGame.getGame_id());
+        List<UserToGame> finalUsers=new ArrayList<>();
+        for(UserToGame utg:users){
+            finalUsers.add(utg.hideInfo());
+        }
+        return finalUsers; 
+    }
+    
+    public List<UserToGame> getRolesDeadAndAlive(UserToGame userToGame){
+        List<UserToGame> users= this.userToGameList(userToGame.getGame_id());
+        List<UserToGame> finalUsers=new ArrayList<>();
+        for(UserToGame utg:users){
+            finalUsers.add(utg.deadRoles());
+        }
+        return finalUsers;
+    }
 
-    public List<UserToGame> getAllPlayesOfType(String roleType) {
-        return entityManager.createQuery("SELECT utg FROM UserToGame utg WHERE utg.role_type= :role_type", UserToGame.class)
-                .setParameter("role_type", roleType)
+    public List<UserToGame> getAllPlayesOfType(String roleType, int game_id) {
+        return entityManager.createQuery("SELECT utg FROM UserToGame utg WHERE utg.role_type= :role_type AND utg.game_id= :game_id", UserToGame.class)
+                .setParameter("role_type", roleType).setParameter("game_id", game_id)
                 .getResultList();
     }
 
@@ -66,7 +90,7 @@ public class UserToGameService {
             int gameId = this.findByUserId(user_id).getGame_id();
             Game game = gameService.searchGameByGameID(gameId);
             List<Integer> users_id = this.usersInGame(gameId);
-            if (users_id.size()==1) {
+            if (users_id.size() == 1) {
                 gameService.deleteGame(game);
             } else {
                 if (game.getLeader_id() == user_id) {
@@ -82,9 +106,16 @@ public class UserToGameService {
                     .executeUpdate();
         }
     }
-    
-    public UserToGame update(UserToGame userToGame){
+
+    public UserToGame update(UserToGame userToGame) {
         entityManager.merge(userToGame);
         return userToGame;
     }
+
+    private List<UserToGame> userToGameList(int game_id) {
+        return entityManager.createQuery("Select utg From UserToGame utg where utg.game_id= :game_id")
+                .setParameter("game_id", game_id)
+                .getResultList();
+    }
+
 }

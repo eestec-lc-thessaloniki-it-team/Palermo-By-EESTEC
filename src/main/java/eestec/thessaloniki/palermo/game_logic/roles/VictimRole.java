@@ -1,6 +1,6 @@
 package eestec.thessaloniki.palermo.game_logic.roles;
 
-import eestec.thessaloniki.palermo.rest.user.User;
+import eestec.thessaloniki.palermo.rest.user_to_game.UserToGame;
 import java.util.List;
 import javax.ws.rs.core.Response;
 
@@ -16,7 +16,7 @@ public class VictimRole extends Role{
     }
 
     @Override
-    protected Response action(List<User> users) {
+    public Response action(UserToGame userToGame,List<UserToGame> users) {
         //Thanks for your cooperation :P :P
         return Response.ok().build(); 
     }

@@ -31,6 +31,11 @@ public class User {
         this.password=hashPassword();
     }
 
+    public User hidePassword(){
+        this.setPassword(null);
+        return this;
+    }
+    
     public int getId() {
         return id;
     }
@@ -88,6 +93,12 @@ public class User {
 	
 	return toReturn;
     }
+
+    @Override
+    public String toString() {
+        return "User{" + "id=" + id + ", username=" + username + ", password=" + password + '}';
+    }
+    
 
    
     
