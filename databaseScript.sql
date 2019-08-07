@@ -57,6 +57,10 @@ ADD PRIMARY KEY (`user_id`);
 ALTER TABLE `palermo`.`game` 
 ADD COLUMN `last_modified` TIMESTAMP NULL AFTER `state`;
 
+ALTER TABLE `palermo`.`user_to_game` 
+ADD COLUMN `isDeadVisible` TINYINT(1) NULL AFTER `votesFromMurderers`,
+ADD COLUMN `actedAtNight` TINYINT(1) NULL AFTER `isDeadVisible`;
+
 
 
 

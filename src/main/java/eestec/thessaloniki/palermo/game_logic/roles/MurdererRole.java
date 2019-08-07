@@ -49,7 +49,6 @@ public class MurdererRole extends Role {
     public Response info(UserToGame userToGame) {
         JsonObjectBuilder jsonObjectBuilder = Json.createObjectBuilder();
         try {
-            jsonObjectBuilder.add("murderers", this.getMurderers(userToGame.getGame_id()));
             jsonObjectBuilder.add("murdererVotes", this.getMurdererVotes(userToGame.getGame_id()));
             return Response.ok(jsonObjectBuilder.build()).build();
         } catch (Exception e) {

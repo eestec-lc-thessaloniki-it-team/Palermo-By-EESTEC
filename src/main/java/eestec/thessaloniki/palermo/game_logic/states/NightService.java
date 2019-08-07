@@ -1,8 +1,7 @@
-package eestec.thessaloniki.palermo.game_logic;
+package eestec.thessaloniki.palermo.game_logic.states;
 
 import eestec.thessaloniki.palermo.game_logic.roles.Role;
 import eestec.thessaloniki.palermo.game_logic.roles.Roles;
-import eestec.thessaloniki.palermo.rest.user.User;
 import eestec.thessaloniki.palermo.rest.user.UserService;
 import eestec.thessaloniki.palermo.rest.user_to_game.UserToGame;
 import eestec.thessaloniki.palermo.rest.user_to_game.UserToGameService;
@@ -38,17 +37,16 @@ public class NightService {
 
     public Response act(UserToken userToken, List<Integer> ids) {
         System.out.println("In night state act");
-
-        UserToGame userToGame = userToGameService.findByUserId(userToken.getUser_id());
-        Role role = this.getUsersRole(userToGame);
-
-        System.out.println("Role is " + role.getRoleName());
-        if (role == null) {
-            return Response.status(510, "Error with finding the role of the user").build();
-        }
         try {
+            UserToGame userToGame = userToGameService.findByUserId(userToken.getUser_id());
+            Role role = this.getUsersRole(userToGame);
 
-            return role.action(userToGame,this.getUsers(userToGame, ids));
+            System.out.println("Role is " + role.getRoleName());
+            if (role == null) {
+                return Response.status(510, "Error with finding the role of the user").build();
+            }
+            userToGame=role.hasActed(userToGame);
+            return role.action(userToGame, this.getUsers(userToGame, ids));
         } catch (NullPointerException e) {
             e.printStackTrace();
             return Response.status(400).build();

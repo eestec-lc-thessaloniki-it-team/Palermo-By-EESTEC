@@ -31,6 +31,12 @@ public class Role {
         return Response.ok().build();
     }
     
+    public UserToGame hasActed(UserToGame userToGame){
+        userToGame.setActedAtNight(true);
+        userToGameService.update(userToGame);
+        return userToGame;
+    }
+    
     protected enum RoleTeam{
         GOOD, BAD, NEUTRAL
     } 
