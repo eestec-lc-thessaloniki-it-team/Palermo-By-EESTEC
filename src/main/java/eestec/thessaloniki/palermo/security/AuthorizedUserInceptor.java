@@ -5,6 +5,7 @@ import eestec.thessaloniki.palermo.rest.user.User;
 import eestec.thessaloniki.palermo.rest.user.UserService;
 import eestec.thessaloniki.palermo.rest.user_token.UserToken;
 import eestec.thessaloniki.palermo.rest.user_token.UserTokenService;
+import eestec.thessaloniki.palermo.wrappers.WrapperUserTokenListIds;
 import javax.annotation.Priority;
 import javax.inject.Inject;
 import javax.interceptor.AroundInvoke;
@@ -26,38 +27,48 @@ public class AuthorizedUserInceptor {
     @AroundInvoke
     public Object authorizedUser(InvocationContext invocationContext) throws Exception {
         System.out.println("Authorized user from method " + invocationContext.getMethod().getName());
-        if (invocationContext.getMethod().getName().equals("act")) { // we will check how we will modifie it to make act work
-            return invocationContext.proceed();
-        }
 
-        if (invocationContext.getMethod().getName().equals("logInUser")) {
-            System.out.println("Check if username and password given belongs to a user");
-            User user = (User) invocationContext.getParameters()[0];
-            if (user.getUsername().equals("") || user.getPassword().equals("")) {
-                return Response.status(400).build();
-            }
-            User u = userService.findUser(user);
-            if (u == null) {
-                return Response.status(410, "Wrong username or password").build();
-            }
-            return invocationContext.proceed();
+        if (invocationContext.getMethod().getName().equals("act")) {
+            return this.testAct(invocationContext);
+        } else if (invocationContext.getMethod().getName().equals("logInUser")) {
+            return this.testLogInUser(invocationContext);
 
-        }
-        //for the rest that we want to be connected and have the same token
-        System.out.println("Check if credentials are correct");
-        for (Object param : invocationContext.getParameters()) {
-            System.out.println(param.getClass());
-            if (param.getClass().equals(UserToken.class)) { //finding the UserToken in params
-                UserToken userToken = (UserToken) param;
-                if (userTokenService.isValid(userToken)) {
-                    return invocationContext.proceed();
-                } else {
-                    return Response.status(401, "Unauthorized").build();
+        } else {
+            for (Object param : invocationContext.getParameters()) {
+                if (param.getClass().equals(UserToken.class)) { //finding the UserToken in params
+                    UserToken userToken = (UserToken) param;
+                    return this.testUserToken(userToken, invocationContext);
                 }
             }
+            return Response.status(400).build();
         }
-        return Response.status(400).build();
+    }
 
+    private Object testAct(InvocationContext context) throws Exception {
+        WrapperUserTokenListIds wrapper = (WrapperUserTokenListIds) context.getParameters()[0];
+        return this.testUserToken(wrapper.getUserToken(), context);
+    }
+
+    private Object testUserToken(UserToken userToken, InvocationContext invocationContext) throws Exception {
+        System.out.println("Check if credentials are correct");
+        if (userTokenService.isValid(userToken)) {
+            return invocationContext.proceed();
+        } else {
+            return Response.status(401, "Unauthorized").build();
+        }
+    }
+
+    private Object testLogInUser(InvocationContext invocationContext) throws Exception {
+        System.out.println("Check if username and password given belongs to a user");
+        User user = (User) invocationContext.getParameters()[0];
+        if (user.getUsername().equals("") || user.getPassword().equals("")) {
+            return Response.status(400).build();
+        }
+        User u = userService.findUser(user);
+        if (u == null) {
+            return Response.status(410, "Wrong username or password").build();
+        }
+        return invocationContext.proceed();
     }
 
 }
