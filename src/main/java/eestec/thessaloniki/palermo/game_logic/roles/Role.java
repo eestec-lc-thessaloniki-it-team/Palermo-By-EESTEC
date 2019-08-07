@@ -21,7 +21,7 @@ public class Role {
     public Role() {
     }
     
-    public Response action(List<UserToGame> users){
+    public Response action(UserToGame userToGame,List<UserToGame> users){
         //This will be override by every role 
         return Response.ok().build();
     }
@@ -52,10 +52,10 @@ public class Role {
         return "Role{" + "roleName=" + roleName + ", roleTeam=" + roleTeam + ", description=" + description + '}';
     }
 
-    public JsonObject getRoleJson(){
+    public JsonObjectBuilder getRoleJson(UserToGame userToGame){
         JsonObjectBuilder jsonObjectBuilder= Json.createObjectBuilder()
                  .add("roleName",this.roleName).add("roleTeam", this.roleTeam.toString()).add("description", this.description);
-        return jsonObjectBuilder.build();
+        return jsonObjectBuilder;
     }
     
 

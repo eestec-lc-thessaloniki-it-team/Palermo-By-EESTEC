@@ -19,7 +19,7 @@ public class PolicemanRole extends Role {
     }
 
     @Override
-    public Response action(List<UserToGame> users) {
+    public Response action(UserToGame userToGame,List<UserToGame> users) {
          System.out.println("Here is police act and the list of users has this "+users.toString());
          JsonObjectBuilder jsonObjectBuilder= Json.createObjectBuilder()
                  .add("isMurderer", users.get(0).getRole_type().equals("Murderer"));

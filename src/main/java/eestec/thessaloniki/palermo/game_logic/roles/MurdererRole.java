@@ -4,15 +4,15 @@ import eestec.thessaloniki.palermo.rest.user.User;
 import eestec.thessaloniki.palermo.rest.user.UserService;
 import eestec.thessaloniki.palermo.rest.user_to_game.UserToGame;
 import eestec.thessaloniki.palermo.rest.user_to_game.UserToGameService;
-import eestec.thessaloniki.palermo.wrappers.WrapperUsersMurdererVotes;
-import java.util.ArrayList;
 import java.util.List;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.json.Json;
+import javax.json.JsonArray;
+import javax.json.JsonArrayBuilder;
+import javax.json.JsonObject;
 import javax.json.JsonObjectBuilder;
 import javax.ws.rs.core.Response;
-import org.json.simple.JSONArray;
 
 @ApplicationScoped
 public class MurdererRole extends Role {
@@ -33,12 +33,12 @@ public class MurdererRole extends Role {
     }
 
     @Override
-    public Response action(List<UserToGame> users) {
+    public Response action(UserToGame userToGame,List<UserToGame> users) {
         //Morderer will suggest someone to be killed
-        System.out.println("I am murderer and i am acting");
         try {
             users.get(0).setVotesFromMurderers(users.get(0).getVotesFromMurderers() + 1);
-            return Response.ok(userToGameService.update(users.get(0))).build();
+            userToGameService.update(users.get(0));
+            return Response.ok(this.getMurdererVotes(userToGame.getGame_id())).build();
         } catch (Exception e) {
             e.printStackTrace();
             return Response.serverError().build();
@@ -47,23 +47,10 @@ public class MurdererRole extends Role {
 
     @Override
     public Response info(UserToGame userToGame) {
-        List<User> users = new ArrayList<>();
-        List<WrapperUsersMurdererVotes> usersInGame = new ArrayList<>();
+        JsonObjectBuilder jsonObjectBuilder = Json.createObjectBuilder();
         try {
-            for (UserToGame utg : userToGameService.getAllPlayesOfType(this.roleName, userToGame.getGame_id())) {
-                users.add(userService.findUserById(utg.getUser_id()).hidePassword());
-            }
-            System.out.println(users.toString());
-            JsonObjectBuilder jsonObjectBuilder = Json.createObjectBuilder()
-                    .add("murderers", Json.createArrayBuilder(users).build());
-
-            //find the votes
-            for (Integer id : userToGameService.usersInGame(userToGame.getGame_id())) {
-                usersInGame.add(new WrapperUsersMurdererVotes(userToGameService.findByUserId(id), userService.findUserById(id).getUsername()));
-            }
-            System.out.println(usersInGame.toString());
-            jsonObjectBuilder.add("murdererVotes", Json.createArrayBuilder(usersInGame).build());
-
+            jsonObjectBuilder.add("murderers", this.getMurderers(userToGame.getGame_id()));
+            jsonObjectBuilder.add("murdererVotes", this.getMurdererVotes(userToGame.getGame_id()));
             return Response.ok(jsonObjectBuilder.build()).build();
         } catch (Exception e) {
             e.printStackTrace();
@@ -71,5 +58,36 @@ public class MurdererRole extends Role {
         }
 
     }
+
+    private JsonArray getMurderers(int game_id) {
+        User u;
+        JsonArrayBuilder jsonUsersBuilder = Json.createArrayBuilder();
+        for (UserToGame utg : userToGameService.getAllPlayesOfType(this.roleName, game_id)) {
+            u = userService.findUserById(utg.getUser_id());
+            jsonUsersBuilder.add(Json.createObjectBuilder().add("user_id", u.getId()).add("username", u.getUsername()));
+        }
+        return jsonUsersBuilder.build();
+    }
+
+    private JsonArray getMurdererVotes(int game_id) {
+        UserToGame utg;
+        JsonArrayBuilder jsonVotesBuilder = Json.createArrayBuilder();
+        for (Integer id : userToGameService.usersInGame(game_id)) {
+            utg = userToGameService.findByUserId(id);
+            jsonVotesBuilder.add(Json.createObjectBuilder().add("user_id", utg.getUser_id()).add("username", userService.findUserById(id).getUsername()).add("votes", utg.getVotesFromMurderers()));
+        }
+        return jsonVotesBuilder.build();
+    }
+
+    @Override
+    public JsonObjectBuilder getRoleJson(UserToGame userToGame) {
+        JsonObjectBuilder jsonObjectBuilder= super.getRoleJson(userToGame); 
+        jsonObjectBuilder.add("murderers", this.getMurderers(userToGame.getGame_id()));
+        return jsonObjectBuilder;
+    }
+
+    
+    
+    
 
 }

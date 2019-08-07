@@ -16,7 +16,7 @@ public class VictimRole extends Role{
     }
 
     @Override
-    public Response action(List<UserToGame> users) {
+    public Response action(UserToGame userToGame,List<UserToGame> users) {
         //Thanks for your cooperation :P :P
         return Response.ok().build(); 
     }

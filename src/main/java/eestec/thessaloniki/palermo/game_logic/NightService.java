@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.inject.Inject;
 import javax.ws.rs.core.Response;
+
 /**
  *
  * This will be responsible for events that will take place in night state
@@ -25,36 +26,36 @@ public class NightService {
 
     @Inject
     private Roles roles;
-    
-    public Response getRoleJson(UserToken userToken){
+
+    public Response getRoleJson(UserToken userToken) {
         UserToGame userToGame = userToGameService.findByUserId(userToken.getUser_id());
         Role role = this.getUsersRole(userToGame);
         if (role == null) {
             return Response.status(510, "Error with finding the role of the user").build();
         }
-        return Response.ok(role.getRoleJson()).build();
+        return Response.ok(role.getRoleJson(userToGame).build()).build();
     }
 
     public Response act(UserToken userToken, List<Integer> ids) {
         System.out.println("In night state act");
-        
+
         UserToGame userToGame = userToGameService.findByUserId(userToken.getUser_id());
         Role role = this.getUsersRole(userToGame);
-        
-        System.out.println("Role is "+role.getRoleName());
+
+        System.out.println("Role is " + role.getRoleName());
         if (role == null) {
             return Response.status(510, "Error with finding the role of the user").build();
         }
         try {
-            
-            return role.action(this.getUsers(userToGame, ids));
+
+            return role.action(userToGame,this.getUsers(userToGame, ids));
         } catch (NullPointerException e) {
             e.printStackTrace();
             return Response.status(400).build();
         }
     }
-    
-    public Response info(UserToken userToken){
+
+    public Response info(UserToken userToken) {
         UserToGame userToGame = userToGameService.findByUserId(userToken.getUser_id());
         Role role = this.getUsersRole(userToGame);
         if (role == null) {
@@ -66,7 +67,6 @@ public class NightService {
             return Response.status(400).build();
         }
     }
-    
 
     private Role getUsersRole(UserToGame userToGame) {
         for (Role r : roles.getRoles()) {

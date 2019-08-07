@@ -92,6 +92,7 @@ public class InGameResource {
         return nightService.act(wrapper.getUserToken(), wrapper.getIds());
     }
     
+    // the info that some roles might need to return
     @Path("nightInfo")
     @POST
     public Response nightInfo(UserToken userToken){
