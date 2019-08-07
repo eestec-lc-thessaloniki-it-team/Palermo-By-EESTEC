@@ -100,8 +100,8 @@ def testCase4(serverIP, username, password, username2, password2, username3, pas
                       json={"userToken": victim, "ids": [policeman["user_id"]]})
     printin(r.status_code == 200, "Victim is taking an action")
 
-    r = requests.post("http://" + serverIP + ":8080/palermo/api/v1/ingame/info",json=victim)
-    printin(r.status_code == 200,"Victim has acted at night")
+    r = requests.post("http://" + serverIP + ":8080/palermo/api/v1/ingame/info", json=victim)
+    printin(r.status_code == 200, "Victim has acted at night")
     print(r.json())
 
     r = requests.post("http://" + serverIP + ":8080/palermo/api/v1/ingame/act",
@@ -114,11 +114,11 @@ def testCase4(serverIP, username, password, username2, password2, username3, pas
 
     r = requests.post("http://" + serverIP + ":8080/palermo/api/v1/ingame/act",
                       json={"userToken": murderer, "ids": [policeman["user_id"]]})
-    printin(r.status_code == 200 and len(r.json())==3, "Murderer vote a player to die")
+    printin(r.status_code == 200 and len(r.json()) == 3, "Murderer vote a player to die")
 
     r = requests.post("http://" + serverIP + ":8080/palermo/api/v1/ingame/nightInfo",
                       json=murderer)
-    printin(r.status_code == 200 and "murdererVotes" in r.json() ,"Murderer vote a player to die")
+    printin(r.status_code == 200 and "murdererVotes" in r.json(), "Murderer vote a player to die")
     print("Votes : ")
     for element in r.json()["murdererVotes"]:
         print(element)

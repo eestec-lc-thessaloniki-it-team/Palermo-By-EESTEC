@@ -56,6 +56,7 @@ public class InGameResource {
         Game game =gameService.searchGameByGameID(userToGame.getGame_id());
         game.nextState();
         gameService.updateGame(game);
+        //should be a method to initialize everything between states
         return Response.ok(game).build();
         
     }
