@@ -34,6 +34,7 @@ public class WhoDied {
             return null;
         }
         List<UserToGame> users=userToGameService.getUsersAndMurderersVotes(leader.getGame_id());
+        System.out.println(users.toString());
         Collections.sort(users,new Comparator<UserToGame>() {
             @Override
             public int compare(UserToGame o2, UserToGame o1) {

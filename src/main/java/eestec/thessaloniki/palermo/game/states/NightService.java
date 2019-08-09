@@ -62,6 +62,7 @@ public class NightService {
         try {
             return role.info(userToGame);
         } catch (NullPointerException e) {
+            e.printStackTrace();
             return Response.status(400).build();
         }
     }
@@ -89,6 +90,7 @@ public class NightService {
             }
             return users;
         } catch (NullPointerException e) {
+            e.printStackTrace();
             return null;
         }
     }

@@ -3,6 +3,7 @@ package eestec.thessaloniki.palermo.rest.user_to_game;
 import eestec.thessaloniki.palermo.rest.game.Game;
 import eestec.thessaloniki.palermo.rest.game.GameService;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
@@ -39,7 +40,7 @@ public class UserToGameService {
     }
 
     public List<UserToGame> getUsersAndMurderersVotes(int game_id) {
-        return entityManager.createQuery("SELECT utg.user_id, utg.votesFromMurderers FROM UserToGame utg WHERE utg.game_id =:game_id",
+        return entityManager.createQuery("SELECT utg FROM UserToGame utg WHERE utg.game_id =:game_id",
                 UserToGame.class)
                 .setParameter("game_id", game_id).getResultList();
     }
@@ -68,13 +69,15 @@ public class UserToGameService {
     }
 
     public List<UserToGame> getRolesDead(UserToGame userToGame) {
-        List<UserToGame> users = entityManager.createQuery("SELECT utg FROM UserToGame utg WHERE utg.is_dead= :dead AND utg.game_id= :game_id", UserToGame.class)
-                .setParameter("dead", true).setParameter("game_id", userToGame.getGame_id()).getResultList();
-        for (UserToGame utg : users) {
-            if (!utg.isIsDeadVisible()) {
-                users.remove(utg);
+        List<UserToGame> users = this.getDeadPlayers(userToGame);
+        Iterator<UserToGame> i =users.iterator();
+        while(i.hasNext()){
+            UserToGame utg=i.next();
+            if(!utg.isIsDeadVisible()){
+                i.remove();
             }
-        }
+        }        
+        System.out.println("all dead people" +users.toString());
         return users;
     }
 

@@ -35,7 +35,7 @@ public class ChangeStates {
             case "Night":
                 return this.changeToNight(leader);
             case "Morning":
-//                whoDied.kill(leader);
+                whoDied.kill(leader);
                 return true;
             default:
                 return false;

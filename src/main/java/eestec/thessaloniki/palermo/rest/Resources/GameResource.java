@@ -59,6 +59,7 @@ public class GameResource {
                 gameService.createGame(game);
                 break;
             } catch (ConstraintViolationException exception) {
+                exception.printStackTrace();
             }
         }
         userToGameService.addUserToGame(new UserToGame(game.getLeader_id(), game.getId()));

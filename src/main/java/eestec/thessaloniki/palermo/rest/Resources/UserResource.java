@@ -71,6 +71,7 @@ public class UserResource {
             userToGameService.logOutUserFromGame(userToken.getUser_id());
             return Response.ok().build();
         } catch (Exception anyException) {
+            anyException.printStackTrace();
             return Response.serverError().build();
         }
 
@@ -88,6 +89,7 @@ public class UserResource {
             return Response.ok().build();
         }catch(Exception exception){
             System.out.println("Problem with deleting user");
+            exception.printStackTrace();
             return Response.serverError().build();
         }
     }
