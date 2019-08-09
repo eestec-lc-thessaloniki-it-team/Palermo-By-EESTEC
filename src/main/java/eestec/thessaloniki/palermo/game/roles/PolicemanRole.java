@@ -1,4 +1,4 @@
-package eestec.thessaloniki.palermo.game_logic.roles;
+package eestec.thessaloniki.palermo.game.roles;
 
 import eestec.thessaloniki.palermo.rest.user_to_game.UserToGame;
 import java.util.List;

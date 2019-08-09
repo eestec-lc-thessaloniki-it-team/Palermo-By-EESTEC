@@ -1,4 +1,4 @@
-package eestec.thessaloniki.palermo.game_logic.roles;
+package eestec.thessaloniki.palermo.game.roles;
 
 import eestec.thessaloniki.palermo.rest.user.User;
 import eestec.thessaloniki.palermo.rest.user.UserService;
@@ -10,7 +10,6 @@ import javax.inject.Inject;
 import javax.json.Json;
 import javax.json.JsonArray;
 import javax.json.JsonArrayBuilder;
-import javax.json.JsonObject;
 import javax.json.JsonObjectBuilder;
 import javax.ws.rs.core.Response;
 

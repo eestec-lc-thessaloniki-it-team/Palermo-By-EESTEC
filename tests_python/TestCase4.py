@@ -1,7 +1,7 @@
 import sys
 
 import requests
-
+from TestingChangeStates import testChangeState
 from printing import printin
 
 
@@ -122,6 +122,8 @@ def testCase4(serverIP, username, password, username2, password2, username3, pas
     print("Votes : ")
     for element in r.json()["murdererVotes"]:
         print(element)
+
+    testChangeState(serverIP,userID1)
 
     r = requests.post("http://" + serverIP + ":8080/palermo/api/v1/user/logOut", json=userID1)
     if r.status_code != 200: sys.exit("Error with clearing data")
