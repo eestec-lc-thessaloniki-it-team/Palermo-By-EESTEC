@@ -22,11 +22,12 @@ def testChangeState(serverIP, userID1):
 
     # Testing dead players
     r = requests.post("http://" + serverIP + ":8080/palermo/api/v1/ingame/deadPlayers", json=userID1)
+    printin(r.status_code==200,"Get dead players")
 
     # Testing all roles
     r = requests.post("http://" + serverIP + ":8080/palermo/api/v1/ingame/allRoles", json=userID1)
+    printin(r.status_code == 200, "Get all roles")
 
     # Testing dead roles
     r = requests.post("http://" + serverIP + ":8080/palermo/api/v1/ingame/deadRoles", json=userID1)
-
-    print("ok here")
+    printin(r.status_code == 200, "Get dead roles")

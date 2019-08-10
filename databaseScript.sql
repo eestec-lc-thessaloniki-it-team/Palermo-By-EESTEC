@@ -61,6 +61,14 @@ ALTER TABLE `palermo`.`user_to_game`
 ADD COLUMN `isDeadVisible` TINYINT(1) NULL AFTER `votesFromMurderers`,
 ADD COLUMN `actedAtNight` TINYINT(1) NULL AFTER `isDeadVisible`;
 
+ALTER TABLE `palermo`.`game` 
+CHANGE COLUMN `last_modified` `is_game_over` TINYINT(1) NULL DEFAULT NULL ;
+
+ALTER TABLE `palermo`.`user_to_game` 
+ADD COLUMN `has_won` TINYINT(1) NULL AFTER `actedAtNight`;
+
+
+
 
 
 

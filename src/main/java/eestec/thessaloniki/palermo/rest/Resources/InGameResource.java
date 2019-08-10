@@ -54,7 +54,7 @@ public class InGameResource {
         game.nextState();
         gameService.updateGame(game);
         changeStates.changeStateTo(game.getState(), userToGame);
-        return Response.ok(game).build();
+        return Response.ok(gameService.searchGameByGameID(userToGame.getGame_id())).build();
         
     }
     
@@ -86,6 +86,7 @@ public class InGameResource {
         Game game =gameService.searchGameByGameID(userToGame.getGame_id());
         JsonObjectBuilder jsonObjectBuilder= Json.createObjectBuilder()
                  .add("state", game.getState());
+        jsonObjectBuilder.add("is_game_over", game.isIs_game_over());
         return Response.ok(jsonObjectBuilder.build()).build(); 
     }
     
