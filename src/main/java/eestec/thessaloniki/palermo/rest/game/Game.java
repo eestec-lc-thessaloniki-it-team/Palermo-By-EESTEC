@@ -23,7 +23,7 @@ public class Game {
     private String random_id;
     private Timestamp created_date;
     private String state;
-    private Timestamp last_modified;
+    private boolean is_game_over;
 
     public Game(int leader_id) {
         this.leader_id = leader_id;
@@ -35,7 +35,7 @@ public class Game {
     @PrePersist
     private void init() {
         this.created_date = Timestamp.valueOf(LocalDateTime.now());
-        this.last_modified=Timestamp.valueOf(LocalDateTime.now());
+        this.is_game_over = false;
         started = false;
         state = "Night";
     }
@@ -103,17 +103,17 @@ public class Game {
         }
     }
 
-    public Timestamp getLast_modified() {
-        return last_modified;
+    public boolean isIs_game_over() {
+        return is_game_over;
     }
 
-    public void setLast_modified(Timestamp last_modified) {
-        this.last_modified = last_modified;
+    public void setIs_game_over(boolean is_game_over) {
+        this.is_game_over = is_game_over;
     }
 
     @Override
     public String toString() {
-        return "Game{" + "id=" + id + ", leader_id=" + leader_id + ", started=" + started + ", random_id=" + random_id + ", created_date=" + created_date + ", state=" + state + '}';
+        return "Game{" + "id=" + id + ", leader_id=" + leader_id + ", started=" + started + ", random_id=" + random_id + ", created_date=" + created_date + ", state=" + state + ", is_game_over=" + is_game_over + '}';
     }
 
     public String getState() {
