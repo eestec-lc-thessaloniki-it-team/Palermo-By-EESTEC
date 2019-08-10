@@ -37,7 +37,7 @@ public class Role {
         return userToGame;
     }
     
-    protected enum RoleTeam{
+    public enum RoleTeam{
         GOOD, BAD, NEUTRAL
     } 
 
