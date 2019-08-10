@@ -5,7 +5,6 @@ import eestec.thessaloniki.palermo.rest.user_to_game.UserToGameService;
 import java.util.List;
 import javax.inject.Inject;
 import javax.json.Json;
-import javax.json.JsonObject;
 import javax.json.JsonObjectBuilder;
 import javax.ws.rs.core.Response;
 

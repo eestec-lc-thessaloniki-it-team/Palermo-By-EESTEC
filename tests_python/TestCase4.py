@@ -60,6 +60,7 @@ def testCase4(serverIP, username, password, username2, password2, username3, pas
 
     r = requests.post("http://" + serverIP + ":8080/palermo/api/v1/ingame/state", json=userID1)
     printin(r.status_code == 200 and r.json()['state'] == "Night", "Ask for game state")
+    print(r.json())
 
     print("Info about the role: ")
     r = requests.post("http://" + serverIP + ":8080/palermo/api/v1/ingame/roleInfo", json=userID1)
@@ -125,8 +126,13 @@ def testCase4(serverIP, username, password, username2, password2, username3, pas
 
     r = requests.post("http://" + serverIP + ":8080/palermo/api/v1/ingame/nextState",
                       json=userID1)
+    printin(r.status_code == 200 and r.json()["is_game_over"], "A new day in palermo")
 
     testChangeState(serverIP,userID1)
+
+    r = requests.post("http://" + serverIP + ":8080/palermo/api/v1/ingame/state",
+                      json=userID2)
+    printin(r.status_code == 200 and r.json()["is_game_over"], "Now everyone knows that the game is over")
 
     r = requests.post("http://" + serverIP + ":8080/palermo/api/v1/user/logOut", json=userID1)
     if r.status_code != 200: sys.exit("Error with clearing data")
