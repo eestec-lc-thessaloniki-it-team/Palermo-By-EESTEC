@@ -3,7 +3,8 @@ package eestec.thessaloniki.palermo.rest.Resources;
 import eestec.thessaloniki.palermo.annotations.interceptors.AuthorizedUser;
 import eestec.thessaloniki.palermo.annotations.interceptors.GameExists;
 import eestec.thessaloniki.palermo.annotations.interceptors.Leader;
-import eestec.thessaloniki.palermo.game_logic.states.NightService;
+import eestec.thessaloniki.palermo.game.states.ChangeStates;
+import eestec.thessaloniki.palermo.game.states.NightService;
 import eestec.thessaloniki.palermo.rest.game.Game;
 import eestec.thessaloniki.palermo.rest.game.GameService;
 import eestec.thessaloniki.palermo.rest.user_to_game.UserToGame;
@@ -27,14 +28,10 @@ import javax.ws.rs.core.Response;
 @GameExists
 public class InGameResource {
     
-    @Inject
-    GameService gameService;
-    
-    @Inject
-    UserToGameService userToGameService;
-    
-    @Inject
-    NightService nightService;
+    @Inject  GameService gameService;
+    @Inject UserToGameService userToGameService;
+    @Inject  NightService nightService;    
+    @Inject ChangeStates changeStates;
     
     @Path("info")
     @POST
@@ -56,9 +53,30 @@ public class InGameResource {
         Game game =gameService.searchGameByGameID(userToGame.getGame_id());
         game.nextState();
         gameService.updateGame(game);
-        //should be a method to initialize everything between states
+        changeStates.changeStateTo(game.getState(), userToGame);
         return Response.ok(game).build();
         
+    }
+    
+    @Path("deadPlayers")
+    @POST
+    public Response getDeadPlayers(UserToken userToken){
+        UserToGame utg=userToGameService.findByUserId(userToken.getUser_id());
+        return changeStates.getDeadPeople(utg);
+    }
+    
+    @Path("deadRoles")
+    @POST
+    public Response getDeadRoles(UserToken userToken){
+        UserToGame utg=userToGameService.findByUserId(userToken.getUser_id());
+        return changeStates.getDeadRoles(utg);
+    }
+    
+    @Path("allRoles")
+    @POST
+    public Response getAllRoles(UserToken userToken){
+        UserToGame utg=userToGameService.findByUserId(userToken.getUser_id());
+        return changeStates.getAllRoles(utg);
     }
     
     @Path("state")
@@ -68,7 +86,7 @@ public class InGameResource {
         Game game =gameService.searchGameByGameID(userToGame.getGame_id());
         JsonObjectBuilder jsonObjectBuilder= Json.createObjectBuilder()
                  .add("state", game.getState());
-        return Response.ok(jsonObjectBuilder.build()).build(); //this might have a problem didn't test it
+        return Response.ok(jsonObjectBuilder.build()).build(); 
     }
     
     @Path("roleInfo")

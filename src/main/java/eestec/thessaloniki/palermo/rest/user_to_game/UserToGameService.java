@@ -3,10 +3,10 @@ package eestec.thessaloniki.palermo.rest.user_to_game;
 import eestec.thessaloniki.palermo.rest.game.Game;
 import eestec.thessaloniki.palermo.rest.game.GameService;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
-import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.transaction.Transactional;
 
@@ -33,6 +33,18 @@ public class UserToGameService {
         return users_id;
     }
 
+    public List<UserToGame> userToGameList(int game_id) {
+        return entityManager.createQuery("Select utg From UserToGame utg where utg.game_id= :game_id")
+                .setParameter("game_id", game_id)
+                .getResultList();
+    }
+
+    public List<UserToGame> getUsersAndMurderersVotes(int game_id) {
+        return entityManager.createQuery("SELECT utg FROM UserToGame utg WHERE utg.game_id =:game_id",
+                UserToGame.class)
+                .setParameter("game_id", game_id).getResultList();
+    }
+
     public boolean initializeActedAtNight(int game_id) {
         try {
             for (UserToGame utg : this.userToGameList(game_id)) {
@@ -50,23 +62,28 @@ public class UserToGameService {
             return false;
         }
     }
-    
-    public List<UserToGame> getDeadPlayers(UserToGame userToGame){
-        List<UserToGame> users= this.userToGameList(userToGame.getGame_id());
-        List<UserToGame> finalUsers=new ArrayList<>();
-        for(UserToGame utg:users){
-            finalUsers.add(utg.hideInfo());
-        }
-        return finalUsers; 
+
+    public List<UserToGame> getDeadPlayers(UserToGame userToGame) {
+        return entityManager.createQuery("SELECT utg FROM UserToGame utg WHERE utg.is_dead= :dead AND utg.game_id= :game_id", UserToGame.class)
+                .setParameter("dead", true).setParameter("game_id", userToGame.getGame_id()).getResultList();
     }
-    
-    public List<UserToGame> getRolesDeadAndAlive(UserToGame userToGame){
-        List<UserToGame> users= this.userToGameList(userToGame.getGame_id());
-        List<UserToGame> finalUsers=new ArrayList<>();
-        for(UserToGame utg:users){
-            finalUsers.add(utg.deadRoles());
-        }
-        return finalUsers;
+
+    public List<UserToGame> getRolesDead(UserToGame userToGame) {
+        List<UserToGame> users = this.getDeadPlayers(userToGame);
+        Iterator<UserToGame> i =users.iterator();
+        while(i.hasNext()){
+            UserToGame utg=i.next();
+            if(!utg.isIsDeadVisible()){
+                i.remove();
+            }
+        }        
+        System.out.println("all dead people" +users.toString());
+        return users;
+    }
+
+    public List<UserToGame> getRoles(UserToGame userToGame) {
+        return entityManager.createQuery("SELECT utg WHERE utg.is_dead= :dead AND utg.game_id= :game_id", UserToGame.class)
+                .setParameter("dead", true).setParameter("game_id", userToGame.getGame_id()).getResultList();
     }
 
     public List<UserToGame> getAllPlayesOfType(String roleType, int game_id) {
@@ -110,12 +127,6 @@ public class UserToGameService {
     public UserToGame update(UserToGame userToGame) {
         entityManager.merge(userToGame);
         return userToGame;
-    }
-
-    private List<UserToGame> userToGameList(int game_id) {
-        return entityManager.createQuery("Select utg From UserToGame utg where utg.game_id= :game_id")
-                .setParameter("game_id", game_id)
-                .getResultList();
     }
 
 }

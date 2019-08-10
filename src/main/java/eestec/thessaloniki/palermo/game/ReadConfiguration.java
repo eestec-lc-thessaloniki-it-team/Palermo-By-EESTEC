@@ -1,7 +1,7 @@
-package eestec.thessaloniki.palermo.game_logic;
+package eestec.thessaloniki.palermo.game;
 
-import eestec.thessaloniki.palermo.game_logic.roles.Role;
-import eestec.thessaloniki.palermo.game_logic.roles.Roles;
+import eestec.thessaloniki.palermo.game.roles.Role;
+import eestec.thessaloniki.palermo.game.roles.Roles;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;

@@ -1,7 +1,7 @@
-package eestec.thessaloniki.palermo.game_logic.states;
+package eestec.thessaloniki.palermo.game.states;
 
-import eestec.thessaloniki.palermo.game_logic.roles.Role;
-import eestec.thessaloniki.palermo.game_logic.roles.Roles;
+import eestec.thessaloniki.palermo.game.roles.Role;
+import eestec.thessaloniki.palermo.game.roles.Roles;
 import eestec.thessaloniki.palermo.rest.user.UserService;
 import eestec.thessaloniki.palermo.rest.user_to_game.UserToGame;
 import eestec.thessaloniki.palermo.rest.user_to_game.UserToGameService;
@@ -62,6 +62,7 @@ public class NightService {
         try {
             return role.info(userToGame);
         } catch (NullPointerException e) {
+            e.printStackTrace();
             return Response.status(400).build();
         }
     }
@@ -89,6 +90,7 @@ public class NightService {
             }
             return users;
         } catch (NullPointerException e) {
+            e.printStackTrace();
             return null;
         }
     }

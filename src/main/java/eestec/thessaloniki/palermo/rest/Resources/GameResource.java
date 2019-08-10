@@ -3,9 +3,9 @@ package eestec.thessaloniki.palermo.rest.Resources;
 import eestec.thessaloniki.palermo.annotations.interceptors.AuthorizedUser;
 import eestec.thessaloniki.palermo.annotations.interceptors.GameExists;
 import eestec.thessaloniki.palermo.annotations.interceptors.Leader;
-import eestec.thessaloniki.palermo.game_logic.GiveRoles;
-import eestec.thessaloniki.palermo.game_logic.roles.Roles;
-import eestec.thessaloniki.palermo.game_logic.states.ChangeStates;
+import eestec.thessaloniki.palermo.game.game_logic.GiveRoles;
+import eestec.thessaloniki.palermo.game.roles.Roles;
+import eestec.thessaloniki.palermo.game.states.ChangeStates;
 import eestec.thessaloniki.palermo.rest.game.Game;
 import eestec.thessaloniki.palermo.rest.game.GameService;
 import eestec.thessaloniki.palermo.rest.user.UserService;
@@ -59,6 +59,7 @@ public class GameResource {
                 gameService.createGame(game);
                 break;
             } catch (ConstraintViolationException exception) {
+                exception.printStackTrace();
             }
         }
         userToGameService.addUserToGame(new UserToGame(game.getLeader_id(), game.getId()));
@@ -112,7 +113,7 @@ public class GameResource {
         }
         game.setStarted(true);
         gameService.updateGame(game);
-         changeStates.changeStateTo("Night", userToGameService.findByUserId(userToken.getUser_id()));
+        changeStates.changeStateTo("Night", userToGameService.findByUserId(userToken.getUser_id()));
         return Response.ok(game).build();
 
     }

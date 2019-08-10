@@ -1,4 +1,4 @@
-package eestec.thessaloniki.palermo.game_logic.roles;
+package eestec.thessaloniki.palermo.game.roles;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -1,5 +1,6 @@
-package eestec.thessaloniki.palermo.game_logic;
+package eestec.thessaloniki.palermo.game.game_logic;
 
+import eestec.thessaloniki.palermo.game.ReadConfiguration;
 import eestec.thessaloniki.palermo.rest.user_to_game.UserToGame;
 import eestec.thessaloniki.palermo.rest.user_to_game.UserToGameService;
 import java.util.Collections;
