@@ -1,10 +1,10 @@
-
 package eestec.thessaloniki.palermo.rest.user;
 
+import java.util.List;
 import javax.inject.Inject;
+import javax.persistence.PersistenceException;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
-import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.asset.EmptyAsset;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
@@ -24,29 +24,29 @@ public class UserServiceTest {
     private User u;
     
     @Deployment
-    public static WebArchive createDeployment(){
-        return ShrinkWrap.create(WebArchive.class,"test.war")
+    public static WebArchive createDeployment() {
+        return ShrinkWrap.create(WebArchive.class, "test.war")
                 .addPackage(UserService.class.getPackage())
-                .addAsResource("persistence.xml","META-INF/persistence.xml")
-                .addAsWebInfResource(EmptyAsset.INSTANCE,"beans.xml");
+                .addAsResource("persistence.xml", "META-INF/persistence.xml")
+                .addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml");
     }
     
-    private User objectUser(){
-        User user=new User();
+    private User objectUser() {
+        User user = new User();
         user.setUsername("panos");
         user.setPassword("1234");
         return user;
     }
-
+    
     @Test
     public void testSomeMethod() {
         assertTrue(true);
     }
     
     @Before
-    public void createUser(){
+    public void createUser() {
         System.out.println("Testing create user");
-         u=userService.createUser(objectUser());
+        u = userService.createUser(objectUser());
         assertEquals("panos", u.getUsername());
         assertNotEquals(0, u.getId());
         assertNotEquals("1234", u.getPassword());
@@ -54,15 +54,43 @@ public class UserServiceTest {
     }
     
     @Test
-    public void nothing(){
-        System.out.println("Find user by Id");
-        User aUser=userService.findUserById(u.getId());
+    public void addSameUsername() {
+        try {
+            userService.createUser(objectUser());
+            assertTrue(false);
+        } catch (PersistenceException e) {
+            assertTrue(true);
+        }
+    }
+    
+    @Test
+    public void findUserById() {
+        User aUser = userService.findUserById(u.getId());
         assertEquals(u, aUser);
     }
     
+    @Test
+    public void findUsername() {
+        User aUser = userService.findUserByUsername(u.getUsername());
+        assertEquals(u, aUser);
+    }
+    
+    @Test
+    public void findUser() {
+        User aUser = new User();
+        aUser.setPassword("1234");
+        aUser.setUsername("panos");
+        assertEquals(u, userService.findUser(aUser));
+    }
+    
+    @Test
+    public void getUsers() {
+        List<User> usesrs = userService.getUsers();
+        assertTrue(usesrs.size() > 0);
+    }
+    
     @After
-    public void deleteUser(){
-        System.out.println("Deleting user");
+    public void deleteUser() {
         userService.removeUser(u.getId());
         assertTrue(true);
     }
