@@ -88,10 +88,10 @@ public class GameResource {
     @POST
     public Response getUsersOfGame(UserToken userToken) {
         Game game = this.findGame(userToken.getUser_id());
-        List<Integer> users_id = userToGameService.usersInGame(game.getId());
+        List<UserToGame> users_id = userToGameService.userToGameList(game.getId());
         List<String> usersList = new ArrayList<>();
-        for (Integer i : users_id) {
-            usersList.add(userService.findUserById(i).getUsername());
+        for (UserToGame utg : users_id) {
+            usersList.add(userService.findUserById(utg.getUser_id()).getUsername());
         }
         return Response.ok(usersList).build();
 

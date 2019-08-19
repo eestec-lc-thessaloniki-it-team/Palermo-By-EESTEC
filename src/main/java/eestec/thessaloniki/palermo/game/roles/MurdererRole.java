@@ -68,11 +68,9 @@ public class MurdererRole extends Role {
     }
 
     private JsonArray getMurdererVotes(int game_id) {
-        UserToGame utg;
         JsonArrayBuilder jsonVotesBuilder = Json.createArrayBuilder();
-        for (Integer id : userToGameService.usersInGame(game_id)) {
-            utg = userToGameService.findByUserId(id);
-            jsonVotesBuilder.add(Json.createObjectBuilder().add("user_id", utg.getUser_id()).add("username", userService.findUserById(id).getUsername()).add("votes", utg.getVotesFromMurderers()));
+        for (UserToGame utg : userToGameService.userToGameList(game_id)) {
+            jsonVotesBuilder.add(Json.createObjectBuilder().add("user_id", utg.getUser_id()).add("username", userService.findUserById(utg.getUser_id()).getUsername()).add("votes", utg.getVotesFromMurderers()));
         }
         return jsonVotesBuilder.build();
     }

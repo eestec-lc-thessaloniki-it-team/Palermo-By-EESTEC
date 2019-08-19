@@ -24,15 +24,6 @@ public class UserToGameService {
         return userToGame;
     }
 
-    public List<Integer> usersInGame(int game_id) {
-        List<UserToGame> users_to_game = this.userToGameList(game_id);
-        List<Integer> users_id = new ArrayList<>();
-        users_to_game.forEach((utg) -> {
-            users_id.add(utg.getUser_id());
-        });
-        return users_id;
-    }
-
     public List<UserToGame> userToGameList(int game_id) {
         return entityManager.createQuery("Select utg From UserToGame utg where utg.game_id= :game_id")
                 .setParameter("game_id", game_id)
@@ -106,13 +97,13 @@ public class UserToGameService {
         try {
             int gameId = this.findByUserId(user_id).getGame_id();
             Game game = gameService.searchGameByGameID(gameId);
-            List<Integer> users_id = this.usersInGame(gameId);
+            List<UserToGame> users_id = this.userToGameList(gameId);
             if (users_id.size() == 1) {
                 gameService.deleteGame(game);
             } else {
                 if (game.getLeader_id() == user_id) {
 
-                    game.setLeader_id(users_id.get(1));
+                    game.setLeader_id(users_id.get(1).getUser_id());
                     gameService.updateGame(game);
                 }
             }
