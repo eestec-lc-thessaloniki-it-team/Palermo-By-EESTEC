@@ -43,7 +43,7 @@ public class UserResource {
     @UserExists
     public Response createUser(User user) {
         userService.createUser(user);
-        UserToken userToken = userTokenService.createUserToken(user.getId());
+        UserToken userToken = userTokenService.getToken(user.getId());
         return Response.ok(userToken).build();
     }
 
@@ -52,13 +52,7 @@ public class UserResource {
     @AuthorizedUser
     public Response logInUser(User user) {
         User u = userService.findUser(user);
-        if(userTokenService.isConnected(u.getId())){
-            UserToken userToken=userTokenService.updateToken(u.getId());
-            return Response.ok(userToken).build();
-        }else{
-            UserToken userToken = userTokenService.createUserToken(u.getId());
-            return Response.ok(userToken).build();
-        }
+        return Response.ok(userTokenService.getToken(u.getId())).build();
 
     }
 

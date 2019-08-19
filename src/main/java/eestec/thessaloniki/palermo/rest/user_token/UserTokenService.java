@@ -16,10 +16,12 @@ public class UserTokenService {
     @PersistenceContext
     EntityManager entityManager;
 
-    public UserToken createUserToken(int user_id) {
-        UserToken userToken = new UserToken(user_id);
-        entityManager.persist(userToken);
-        return userToken;
+    public UserToken getToken(int user_id) {
+        if (this.isConnected(user_id)) {
+            return this.updateToken(user_id);
+        } else {
+            return this.createUserToken(user_id);
+        }
     }
 
     public boolean isValid(UserToken userToken) {
@@ -33,9 +35,19 @@ public class UserTokenService {
 
     }
 
-    public boolean isConnected(int user_id) {
+    public UserToken findById(int user_id) {
+        return entityManager.find(UserToken.class, user_id);
+    }
+
+    private UserToken createUserToken(int user_id) {
+        UserToken userToken = new UserToken(user_id);
+        entityManager.persist(userToken);
+        return userToken;
+    }
+
+    private boolean isConnected(int user_id) {
         try {
-            UserToken userToken=(UserToken)entityManager.createQuery("Select ut FROM UserToken ut WHERE ut.user_id= :user_id")
+            UserToken userToken = (UserToken) entityManager.createQuery("Select ut FROM UserToken ut WHERE ut.user_id= :user_id")
                     .setParameter("user_id", user_id).getSingleResult();
             return true;
         } catch (NoResultException exception) {
@@ -43,15 +55,11 @@ public class UserTokenService {
         }
     }
     
-    public UserToken updateToken(int user_id){
+    private UserToken updateToken(int user_id) {
         UserToken userToken = findById(user_id);
         userToken.updateToken();
         entityManager.merge(userToken);
         return userToken;
-    }
-    
-    public UserToken findById(int user_id){
-        return entityManager.find(UserToken.class, user_id);
     }
 
 }
