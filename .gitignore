@@ -9,6 +9,7 @@ node_modules/
 startServer.sh
 buildRunTests.sh
 env.properties
+standalone.xml
  
 # OS Files #
 .DS_Store
