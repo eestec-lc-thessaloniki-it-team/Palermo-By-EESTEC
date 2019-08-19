@@ -6,6 +6,9 @@ libs/
 tmp/
 node_modules/
 */__pycache__/
+startServer.sh
+buildRunTests.sh
+env.properties
  
 # OS Files #
 .DS_Store
@@ -62,23 +65,6 @@ nb-configuration.xml
 *.iws
 .idea/
 /atlassian-ide-plugin.xml
-
- 
-######################
-# Eclipse
-######################
- 
-*.pydevproject
-.project
-.metadata
-*.tmp
-*.bak
-*.swp
-*~.nib
-local.properties
-.classpath
-.settings/
-.loadpath
 
 # External tool builders
 .externalToolBuilders/
