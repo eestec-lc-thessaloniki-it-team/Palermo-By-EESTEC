@@ -52,16 +52,7 @@ public class GameResource {
     @Path("newGame")
     @POST
     public Response createGame(UserToken userToken) {
-        Game game = new Game(userToken.getUser_id());
-        while (true) {
-            try {
-                game.generateRandomId();
-                gameService.createGame(game);
-                break;
-            } catch (ConstraintViolationException exception) {
-                exception.printStackTrace();
-            }
-        }
+        Game game =gameService.createGame(userToken);
         userToGameService.addUserToGame(new UserToGame(game.getLeader_id(), game.getId()));
         return Response.ok(game).build();
     }
