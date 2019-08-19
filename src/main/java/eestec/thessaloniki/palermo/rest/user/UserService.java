@@ -1,7 +1,6 @@
 package eestec.thessaloniki.palermo.rest.user;
 
 import java.util.List;
-import javax.enterprise.context.RequestScoped;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;

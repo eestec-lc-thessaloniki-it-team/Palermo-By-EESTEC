@@ -6,6 +6,9 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import javax.inject.Inject;
+import javax.json.Json;
+import javax.json.JsonArray;
+import javax.json.JsonArrayBuilder;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.transaction.Transactional;
@@ -22,15 +25,6 @@ public class UserToGameService {
     public UserToGame addUserToGame(UserToGame userToGame) {
         entityManager.persist(userToGame);
         return userToGame;
-    }
-
-    public List<Integer> usersInGame(int game_id) {
-        List<UserToGame> users_to_game = this.userToGameList(game_id);
-        List<Integer> users_id = new ArrayList<>();
-        users_to_game.forEach((utg) -> {
-            users_id.add(utg.getUser_id());
-        });
-        return users_id;
     }
 
     public List<UserToGame> userToGameList(int game_id) {
@@ -106,13 +100,13 @@ public class UserToGameService {
         try {
             int gameId = this.findByUserId(user_id).getGame_id();
             Game game = gameService.searchGameByGameID(gameId);
-            List<Integer> users_id = this.usersInGame(gameId);
+            List<UserToGame> users_id = this.userToGameList(gameId);
             if (users_id.size() == 1) {
                 gameService.deleteGame(game);
             } else {
                 if (game.getLeader_id() == user_id) {
 
-                    game.setLeader_id(users_id.get(1));
+                    game.setLeader_id(users_id.get(1).getUser_id());
                     gameService.updateGame(game);
                 }
             }
@@ -129,4 +123,13 @@ public class UserToGameService {
         return userToGame;
     }
 
+    public  JsonArray getWhoWon(int game_id){
+         JsonArrayBuilder jsonWonBuilder = Json.createArrayBuilder();
+        for(UserToGame utg: this.userToGameList(game_id)){
+            if(utg.isHas_won()){
+                jsonWonBuilder.add(Json.createObjectBuilder().add("user",utg.getUser_id() ).add("role", utg.getRole_type()));
+            }
+        }
+        return jsonWonBuilder.build();
+    }
 }

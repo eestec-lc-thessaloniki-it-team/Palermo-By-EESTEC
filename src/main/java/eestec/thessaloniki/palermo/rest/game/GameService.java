@@ -1,19 +1,31 @@
 package eestec.thessaloniki.palermo.rest.game;
 
+import eestec.thessaloniki.palermo.rest.user_to_game.UserToGame;
+import eestec.thessaloniki.palermo.rest.user_token.UserToken;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.transaction.Transactional;
+import javax.validation.ConstraintViolationException;
 
 @Transactional
 public class GameService {
 
     @PersistenceContext
     EntityManager entityManager;
-
-    public Game createGame(Game game) {
-        entityManager.persist(game);
-        return game;
+    
+    public Game createGame(UserToken leaderToken){
+        Game game = new Game(leaderToken.getUser_id());
+        while (true) {
+            try {
+                game.generateRandomId();
+                entityManager.persist(game);
+                return game;
+            } catch (ConstraintViolationException exception) {
+                exception.printStackTrace();
+            }
+        }
+        
     }
 
     public Game searchGameByRandomId(String random_id) {

@@ -16,7 +16,7 @@ public class GiveRoles {
     UserToGameService userToGameService;
 
     public boolean giveRoles(int game_id) {
-        List<Integer> users_id = userToGameService.usersInGame(game_id);
+        List<UserToGame> users_id = userToGameService.userToGameList(game_id);
         String[] roles = readConfiGuration.getStringBasedOnNumberOfPlayers(users_id.size());
         if(roles==null){ // in case something was wrong with the parsing
             return false;
@@ -24,14 +24,13 @@ public class GiveRoles {
         return this.giveRoleToPlayers(roles, users_id);
     }
 
-    private boolean giveRoleToPlayers(String[] rolesFromConfiguration, List<Integer> users_id) {
+    private boolean giveRoleToPlayers(String[] rolesFromConfiguration, List<UserToGame> users_id) {
         System.out.println("I want to give roles, these are the roles...");
         Collections.shuffle(users_id);
-        UserToGame userToGame;
+        
         int counter = 1;
         try {
-            for (int i : users_id) {
-                userToGame = userToGameService.findByUserId(i);
+            for (UserToGame userToGame : users_id) {
                 userToGame.setRole_type(rolesFromConfiguration[counter]);
                 counter++;
                 userToGameService.update(userToGame);
