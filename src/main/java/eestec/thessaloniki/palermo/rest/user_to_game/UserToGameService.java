@@ -6,6 +6,9 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import javax.inject.Inject;
+import javax.json.Json;
+import javax.json.JsonArray;
+import javax.json.JsonArrayBuilder;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.transaction.Transactional;
@@ -120,4 +123,13 @@ public class UserToGameService {
         return userToGame;
     }
 
+    public  JsonArray getWhoWon(int game_id){
+         JsonArrayBuilder jsonWonBuilder = Json.createArrayBuilder();
+        for(UserToGame utg: this.userToGameList(game_id)){
+            if(utg.isHas_won()){
+                jsonWonBuilder.add(Json.createObjectBuilder().add("user",utg.getUser_id() ).add("role", utg.getRole_type()));
+            }
+        }
+        return jsonWonBuilder.build();
+    }
 }

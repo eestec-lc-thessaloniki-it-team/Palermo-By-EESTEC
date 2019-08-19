@@ -79,6 +79,12 @@ public class InGameResource {
         return changeStates.getAllRoles(utg);
     }
     
+    /**
+     * This will inform users for the state of the game
+     * @param userToken the users that asks for it  
+     * @return a json that will contain the state of the game, if the game has ended and if thats true it will also contains
+     * a list of players that won with their roles
+     */
     @Path("state")
     @POST
     public Response getState(UserToken userToken){
@@ -87,6 +93,9 @@ public class InGameResource {
         JsonObjectBuilder jsonObjectBuilder= Json.createObjectBuilder()
                  .add("state", game.getState());
         jsonObjectBuilder.add("is_game_over", game.isIs_game_over());
+        if(game.isIs_game_over()){
+            jsonObjectBuilder.add("won", userToGameService.getWhoWon(game.getId()));
+        }
         return Response.ok(jsonObjectBuilder.build()).build(); 
     }
     
