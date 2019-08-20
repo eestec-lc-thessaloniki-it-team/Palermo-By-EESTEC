@@ -105,7 +105,6 @@ public class GameOver {
         lists.add(new ArrayList<UserToGame>());
         lists.add(new ArrayList<UserToGame>());
         lists.add(new ArrayList<UserToGame>());
-        System.out.println("We are even deeper here");
         for (UserToGame utg : users) {
             for (Role role : roles.getRoles()) {
                 if (role.getRoleName().equals(utg.getRole_type())) {

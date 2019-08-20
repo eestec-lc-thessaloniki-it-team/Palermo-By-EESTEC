@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package eestec.thessaloniki.palermo.rest.connectors;
 
 import eestec.thessaloniki.palermo.game.game_logic.GiveRoles;
@@ -67,9 +62,14 @@ public class GameConnector {
     }
 
     public Response endGame(UserToken userToken) {
-        Game game = this.findGame(userToken.getUser_id());
-        userToGameService.deleteUsersFromGame(game.getId());
-        gameService.deleteGame(game);
+        try {
+            Game game = this.findGame(userToken.getUser_id());
+            userToGameService.deleteUsersFromGame(game.getId());
+            gameService.deleteGame(game);
+        } catch (NullPointerException e) { // this will be that there is no user in the game, after all logged out
+            gameService.deleteGame(gameService.searchGameByLeaderID(userToken.getUser_id()));
+        }
+        
         return Response.ok().build();
     }
 

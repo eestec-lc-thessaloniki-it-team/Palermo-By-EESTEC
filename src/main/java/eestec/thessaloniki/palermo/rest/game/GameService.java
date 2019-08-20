@@ -52,6 +52,12 @@ public class GameService {
         }
     }
     
+    public Game searchGameByLeaderID(int leader_id){
+        return entityManager.createQuery("SELECT g FROM Game g WHERE g.leader_id = :leader_id",Game.class)
+                .setParameter("leader_id", leader_id)
+                .getSingleResult();
+    }
+    
     public Game updateGame(Game game){
         entityManager.merge(game);
         return game;
