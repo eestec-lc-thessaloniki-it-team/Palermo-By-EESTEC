@@ -1,2 +1,3 @@
 2,Murderer,Policeman
 3,Murderer,Policeman,Victim
+4,Murderer,Policeman,Victim,Victim

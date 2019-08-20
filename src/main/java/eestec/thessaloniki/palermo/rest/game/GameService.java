@@ -1,6 +1,5 @@
 package eestec.thessaloniki.palermo.rest.game;
 
-import eestec.thessaloniki.palermo.rest.user_to_game.UserToGame;
 import eestec.thessaloniki.palermo.rest.user_token.UserToken;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
@@ -51,6 +50,12 @@ public class GameService {
         } catch (NoResultException e) {
             return null;
         }
+    }
+    
+    public Game searchGameByLeaderID(int leader_id){
+        return entityManager.createQuery("SELECT g FROM Game g WHERE g.leader_id = :leader_id",Game.class)
+                .setParameter("leader_id", leader_id)
+                .getSingleResult();
     }
     
     public Game updateGame(Game game){
