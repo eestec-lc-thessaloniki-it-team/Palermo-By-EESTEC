@@ -1,6 +1,5 @@
 package eestec.thessaloniki.palermo.rest.game;
 
-import eestec.thessaloniki.palermo.rest.user_to_game.UserToGame;
 import eestec.thessaloniki.palermo.rest.user_token.UserToken;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
