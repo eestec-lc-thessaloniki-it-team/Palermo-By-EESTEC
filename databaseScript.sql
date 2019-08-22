@@ -67,6 +67,11 @@ CHANGE COLUMN `last_modified` `is_game_over` TINYINT(1) NULL DEFAULT NULL ;
 ALTER TABLE `palermo`.`user_to_game` 
 ADD COLUMN `has_won` TINYINT(1) NULL AFTER `actedAtNight`;
 
+ALTER TABLE `palermo`.`user_to_game` 
+ADD COLUMN `is_voting` TINYINT(1) NULL AFTER `has_won`,
+ADD COLUMN `has_vote` TINYINT(1) NULL AFTER `is_voting`;
+
+
 
 
 

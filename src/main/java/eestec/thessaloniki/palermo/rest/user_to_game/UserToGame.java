@@ -18,7 +18,9 @@ public class UserToGame implements Serializable {
     private int votesFromMurderers;
     private boolean isDeadVisible;
     private boolean actedAtNight;
-     private boolean has_won;
+    private boolean has_won;
+    private boolean is_voting;
+    private boolean has_vote;
 
     public UserToGame(int user_id, int game_id) {
         this.user_id = user_id;
@@ -35,7 +37,9 @@ public class UserToGame implements Serializable {
         this.votesFromMurderers = 0;
         this.actedAtNight = false;
         this.isDeadVisible = true;
-        this.has_won=false;
+        this.is_voting=false;
+        this.has_vote=false;
+        this.has_won = false;
     }
 
     public int getUser_id() {
@@ -102,9 +106,25 @@ public class UserToGame implements Serializable {
         this.has_won = has_won;
     }
 
+    public boolean isIs_voting() {
+        return is_voting;
+    }
+
+    public void setIs_voting(boolean is_voting) {
+        this.is_voting = is_voting;
+    }
+
+    public boolean isHas_vote() {
+        return has_vote;
+    }
+
+    public void setHas_vote(boolean has_vote) {
+        this.has_vote = has_vote;
+    }
+
     @Override
     public String toString() {
-        return "UserToGame{" + "user_id=" + user_id + ", game_id=" + game_id + ", role_type=" + role_type + ", is_dead=" + is_dead + ", votesFromMurderers=" + votesFromMurderers + ", isDeadVisible=" + isDeadVisible + ", actedAtNight=" + actedAtNight + ", has_won=" + has_won + '}';
+        return "UserToGame{" + "user_id=" + user_id + ", game_id=" + game_id + ", role_type=" + role_type + ", is_dead=" + is_dead + ", votesFromMurderers=" + votesFromMurderers + ", isDeadVisible=" + isDeadVisible + ", actedAtNight=" + actedAtNight + ", has_won=" + has_won + ", is_voting=" + is_voting + ", has_vote=" + has_vote + '}';
     }
 
     
