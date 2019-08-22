@@ -4,7 +4,7 @@ import eestec.thessaloniki.palermo.annotations.interceptors.AuthorizedUser;
 import eestec.thessaloniki.palermo.annotations.interceptors.GameExists;
 import eestec.thessaloniki.palermo.annotations.interceptors.Leader;
 import eestec.thessaloniki.palermo.game.states.ChangeStates;
-import eestec.thessaloniki.palermo.game.states.NightService;
+import eestec.thessaloniki.palermo.game.states.NightState;
 import eestec.thessaloniki.palermo.rest.game.Game;
 import eestec.thessaloniki.palermo.rest.game.GameService;
 import eestec.thessaloniki.palermo.rest.user_to_game.UserToGame;
@@ -30,7 +30,7 @@ public class InGameResource {
     
     @Inject  GameService gameService;
     @Inject UserToGameService userToGameService;
-    @Inject  NightService nightService;    
+    @Inject  NightState nightService;    
     @Inject ChangeStates changeStates;
     
     @Path("info")

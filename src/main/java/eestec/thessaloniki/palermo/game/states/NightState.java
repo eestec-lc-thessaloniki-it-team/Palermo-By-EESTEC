@@ -15,7 +15,7 @@ import javax.ws.rs.core.Response;
  *
  * This will be responsible for events that will take place in night state
  */
-public class NightService {
+public class NightState {
 
     @Inject
     UserToGameService userToGameService;

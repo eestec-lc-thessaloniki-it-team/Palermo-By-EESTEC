@@ -43,6 +43,7 @@ public class VoteService {
         entityManager.createQuery("DELETE FROM Vote v WHERE v.game_id= :game_id")
                 .setParameter("game_id", game_id).executeUpdate();
     }
+    
 
     private int getDead(List<Integer> users_id) {
         Map<Integer, Integer> map = new HashMap<>();

@@ -10,6 +10,7 @@ import javax.json.Json;
 import javax.json.JsonArray;
 import javax.json.JsonArrayBuilder;
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.transaction.Transactional;
 
@@ -64,14 +65,14 @@ public class UserToGameService {
 
     public List<UserToGame> getRolesDead(UserToGame userToGame) {
         List<UserToGame> users = this.getDeadPlayers(userToGame);
-        Iterator<UserToGame> i =users.iterator();
-        while(i.hasNext()){
-            UserToGame utg=i.next();
-            if(!utg.isIsDeadVisible()){
+        Iterator<UserToGame> i = users.iterator();
+        while (i.hasNext()) {
+            UserToGame utg = i.next();
+            if (!utg.isIsDeadVisible()) {
                 i.remove();
             }
-        }        
-        System.out.println("all dead people" +users.toString());
+        }
+        System.out.println("all dead people" + users.toString());
         return users;
     }
 
@@ -123,13 +124,40 @@ public class UserToGameService {
         return userToGame;
     }
 
-    public  JsonArray getWhoWon(int game_id){
-         JsonArrayBuilder jsonWonBuilder = Json.createArrayBuilder();
-        for(UserToGame utg: this.userToGameList(game_id)){
-            if(utg.isHas_won()){
-                jsonWonBuilder.add(Json.createObjectBuilder().add("user",utg.getUser_id() ).add("role", utg.getRole_type()));
+    public JsonArray getWhoWon(int game_id) {
+        JsonArrayBuilder jsonWonBuilder = Json.createArrayBuilder();
+        for (UserToGame utg : this.userToGameList(game_id)) {
+            if (utg.isHas_won()) {
+                jsonWonBuilder.add(Json.createObjectBuilder().add("user", utg.getUser_id()).add("role", utg.getRole_type()));
             }
         }
         return jsonWonBuilder.build();
+    }
+
+    /**
+     * It will return the userToGame record of the next payer who is voting
+     *
+     * @param game_id
+     * @return either the userToGame record if that exists, or null if the
+     * voting is over
+     */
+    public UserToGame getWhoIsVoting(int game_id) {
+        try {
+            return entityManager.createQuery("SELECT utg FROM UserToGame utg WHERE utg.game_id = :game_id AND utg.is_voting = :is_voting", UserToGame.class)
+                    .setParameter("game_id", game_id).setParameter("is_voting", true).getSingleResult();
+        } catch (NoResultException e) {
+            return null;
+        }
+    }
+
+    public boolean isVotingOver(int game_id) {
+        try {
+            entityManager.createQuery("SELECT utg FROM UserToGame utg WHERE"
+                    + " utg.game_id = :game_id and utg.is_voting = :is_voting", UserToGame.class)
+                    .setParameter("game_id", game_id).setParameter("is_voting", true).getResultList();
+            return false;
+        } catch (NoResultException e) {
+            return true;
+        }
     }
 }
