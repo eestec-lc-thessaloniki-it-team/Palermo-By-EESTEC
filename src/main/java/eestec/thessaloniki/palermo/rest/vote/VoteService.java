@@ -21,6 +21,30 @@ public class VoteService {
         return vote;
     }
 
+
+    public List<Vote> getCurrentVotes(int game_id) {
+        return entityManager.createQuery("SELECT v FROM Vote v WHERE v.game_id = :game_id ORDER BY v.votes DESC", Vote.class)
+                .setParameter("game_id", game_id).getResultList();
+    }
+    
+    public void deleteVotes(int game_id){
+        try{
+        entityManager.createQuery("DELETE FROM Vote v WHERE v.game_id= :game_id ")
+                .setParameter("game_id", game_id).executeUpdate();
+        }catch(TransactionRequiredException e){
+            return;
+        }
+    }
+    
+    public void voted(int user_Id){
+        Vote vote=entityManager.find(Vote.class,user_Id);
+        vote.setVotes(vote.getVotes()+1);
+        entityManager.merge(vote);
+    }
+    
+    
+    
+    
     /**
      * This will return the user id with more votes or one random if there more
      * than 2 in the first place
@@ -32,23 +56,9 @@ public class VoteService {
         List<Vote> votes = this.getCurrentVotes(gameId);
         List<Integer> users_id = new ArrayList<>();
         for (Vote v : votes) {
-            users_id.add(v.getDead_user_id());
+            users_id.add(v.getVotes());
         }
         return this.getDead(users_id);
-    }
-
-    public List<Vote> getCurrentVotes(int game_id) {
-        return entityManager.createQuery("SELECT v FROM Vote v WHERE v.game_id = :game_id", Vote.class)
-                .setParameter("game_id", game_id).getResultList();
-    }
-    
-    public void deleteVotes(int game_id){
-        try{
-        entityManager.createQuery("DELETE FROM Vote v WHERE v.game_id= :game_id")
-                .setParameter("game_id", game_id).executeUpdate();
-        }catch(TransactionRequiredException e){
-            System.out.println("This is the first time we come here");
-        }
     }
     
 

@@ -104,6 +104,7 @@ public class VotingStateTest {
         System.out.println("User_id: " + voter.getUser_id() + " has voted for " + voteFor);
         
         System.out.println(voteService.getCurrentVotes(firstVoter.getGame_id()).toString());
+        assertTrue(userToGameService.isVotingOver(voter.getGame_id())); // the voting should be over here
         
 
     }

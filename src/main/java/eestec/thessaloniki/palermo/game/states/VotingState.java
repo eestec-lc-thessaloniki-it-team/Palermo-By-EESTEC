@@ -27,25 +27,35 @@ public class VotingState {
 
     private final SecureRandom random = new SecureRandom();
 
+    /**
+     * This is what happens the first time that we start the voting. All users will be added with 0 votes in the vote table
+     * @param game_id 
+     */
     public void initliazeVoteState(int game_id) {
         voteService.deleteVotes(game_id);
-        for (UserToGame utg : userToGameService.userToGameList(game_id)) {
+        List<UserToGame> userToGames=userToGameService.userToGameList(game_id);
+        this.initlializeUserToGame(userToGames);
+        this.insertCandidates(userToGames,game_id);
+        this.chooseNextToVote(game_id);
+    }
+
+    private void insertCandidates(List<UserToGame> utgs, int game_id){
+        for (UserToGame utg:utgs){
+            voteService.insert(new Vote(game_id, utg.getUser_id(), 0));
+        }
+    }
+    
+    private void initlializeUserToGame(List<UserToGame> utgs){
+        for (UserToGame utg : utgs ) {
             utg.setIs_voting(false);
             utg.setHas_vote(false);
             userToGameService.update(utg);
         }
-        this.chooseNextToVote(game_id);
     }
-
-    /**
-     * Make a vote
-     *
-     * @param vote
-     * @return
-     */
+    
     public Response vote(WrapperUserTokenVote userTokenVote) {
         UserToGame utg = userToGameService.findByUserId(userTokenVote.getUserToken().getUser_id());
-        voteService.insert(new Vote(utg.getGame_id(), utg.getUser_id(), userTokenVote.getDeadUser_id()));
+        voteService.voted(userTokenVote.getDeadUser_id());
         this.chooseNextToVote(utg.getGame_id());
         return Response.ok().build();
 
@@ -55,12 +65,36 @@ public class VotingState {
         JsonObjectBuilder JsonObjectBuilder = Json.createObjectBuilder();
         JsonArrayBuilder jsonVotes = Json.createArrayBuilder();
         for (Vote v : voteService.getCurrentVotes(game_id)) {
-            jsonVotes.add(Json.createObjectBuilder().add("user_id", v.getUser_id()).add("deadUser_id", v.getDead_user_id()));
+            jsonVotes.add(Json.createObjectBuilder().add("user_id", v.getUser_id()).add("votes", v.getVotes()));
         }
         JsonObjectBuilder.add("votes", jsonVotes.build());
         JsonObjectBuilder.add("whoIsVoting", userToGameService.getWhoIsVoting(game_id).getUser_id());
         JsonObjectBuilder.add("is_voting_over", userToGameService.isVotingOver(game_id));
         return Response.ok(JsonObjectBuilder.build()).build();
+    }
+    
+    private void whenVoteEnds(int game_id){
+        List<Vote> votes = voteService.getCurrentVotes(game_id);
+        int countSameVotes=1;
+        for(int i=1;i<votes.size();i++){
+            if(votes.get(0).getVotes()==votes.get(i).getVotes()){
+                countSameVotes++;
+            }
+        }
+        if(countSameVotes==votes.size()){//then we will choose with random who is going to die
+            //kill them all
+        }else{// we will keep the first countSameVotes and add them to the votes again, if it is 1 then we kill him
+            if(countSameVotes==1){ // one has the most 
+                //kill this one
+            }else{// initialize the voting again
+                
+            }
+        }
+        // delete the votes
+    }
+    
+    private void killThemAll(List<Vote> votes){
+        return;
     }
 
     /**
