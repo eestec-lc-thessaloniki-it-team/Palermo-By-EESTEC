@@ -66,6 +66,24 @@ public class NightState {
             return Response.status(400).build();
         }
     }
+    
+        public boolean initializeNight(int game_id) {
+        try {
+            for (UserToGame utg : userToGameService.userToGameList(game_id)) {
+                if (utg.getRole_type().equals("Victim")) { //victims no need to take actions
+                    utg.setActedAtNight(true);
+                } else {
+                    utg.setActedAtNight(false);
+                }
+                utg.setVotesFromMurderers(0);
+                userToGameService.update(utg);
+            }
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
 
     private Role getUsersRole(UserToGame userToGame) {
         for (Role r : roles.getRoles()) {

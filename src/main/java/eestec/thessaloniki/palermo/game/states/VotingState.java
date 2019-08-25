@@ -93,7 +93,7 @@ public class VotingState {
             userToGameService.update(utg);
             return true;
         }else{
-            return false;
+            return false; // this will determin who is about to die
         }
 
     }

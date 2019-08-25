@@ -49,12 +49,7 @@ public class InGameResource {
     @Leader
     //check if you can change the state
     public Response changeState(UserToken userToken){ 
-        UserToGame userToGame = userToGameService.findByUserId(userToken.getUser_id());
-        Game game =gameService.searchGameByGameID(userToGame.getGame_id());
-        game.nextState();
-        gameService.updateGame(game);
-        changeStates.changeStateTo(game.getState(), userToGame);
-        return Response.ok(gameService.searchGameByGameID(userToGame.getGame_id())).build();
+        return changeStates.changeState(userToken);
         
     }
     

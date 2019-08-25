@@ -40,23 +40,7 @@ public class UserToGameService {
                 .setParameter("game_id", game_id).getResultList();
     }
 
-    public boolean initializeActedAtNight(int game_id) {
-        try {
-            for (UserToGame utg : this.userToGameList(game_id)) {
-                if (utg.getRole_type().equals("Victim")) { //victims no need to take actions
-                    utg.setActedAtNight(true);
-                } else {
-                    utg.setActedAtNight(false);
-                }
-                utg.setVotesFromMurderers(0);
-                this.update(utg);
-            }
-            return true;
-        } catch (Exception e) {
-            e.printStackTrace();
-            return false;
-        }
-    }
+
 
     public List<UserToGame> getDeadPlayers(UserToGame userToGame) {
         return entityManager.createQuery("SELECT utg FROM UserToGame utg WHERE utg.is_dead= :dead AND utg.game_id= :game_id", UserToGame.class)

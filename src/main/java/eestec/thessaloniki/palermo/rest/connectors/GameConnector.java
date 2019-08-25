@@ -42,7 +42,7 @@ public class GameConnector {
         }
         game.setStarted(true);
         gameService.updateGame(game);
-        changeStates.changeStateTo("Night", userToGameService.findByUserId(leaderToken.getUser_id()));
+        changeStates.changeState(leaderToken);
         return Response.ok(game).build();
 
     }
