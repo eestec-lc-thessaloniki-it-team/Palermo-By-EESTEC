@@ -71,6 +71,10 @@ ALTER TABLE `palermo`.`user_to_game`
 ADD COLUMN `is_voting` TINYINT(1) NULL AFTER `has_won`,
 ADD COLUMN `has_vote` TINYINT(1) NULL AFTER `is_voting`;
 
+ALTER TABLE `palermo`.`vote` 
+CHANGE COLUMN `dead_user_id` `votes` INT(11) NOT NULL ;
+
+
 
 
 

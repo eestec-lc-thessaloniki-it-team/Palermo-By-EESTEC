@@ -15,15 +15,53 @@ public class Vote implements Serializable {
     @Id
     private int user_id;
     @NotNull
-    private int dead_user_id;
+    private int votes;
 
     public Vote() {
     }
 
-    public Vote(int game_id, int user_id, int dead_user_id) {
+    public Vote(int game_id, int user_id, int votes) {
         this.game_id = game_id;
         this.user_id = user_id;
-        this.dead_user_id = dead_user_id;
+        this.votes = votes;
+    }
+
+    @Override
+    public String toString() {
+        return "Vote{" + "game_id=" + game_id + ", user_id=" + user_id + ", votes=" + votes + '}';
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 5;
+        hash = 29 * hash + this.game_id;
+        hash = 29 * hash + this.user_id;
+        hash = 29 * hash + this.votes;
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final Vote other = (Vote) obj;
+        if (this.game_id != other.game_id) {
+            return false;
+        }
+        if (this.user_id != other.user_id) {
+            return false;
+        }
+        if (this.votes != other.votes) {
+            return false;
+        }
+        return true;
     }
     
     
@@ -46,12 +84,12 @@ public class Vote implements Serializable {
         this.user_id = user_id;
     }
 
-    public int getDead_user_id() {
-        return dead_user_id;
+    public int getVotes() {
+        return votes;
     }
 
-    public void setDead_user_id(int dead_user_id) {
-        this.dead_user_id = dead_user_id;
+    public void setVotes(int votes) {
+        this.votes = votes;
     }
     
     

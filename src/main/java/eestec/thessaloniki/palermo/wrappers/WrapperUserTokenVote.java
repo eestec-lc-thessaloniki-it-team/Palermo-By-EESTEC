@@ -16,6 +16,16 @@ public class WrapperUserTokenVote {
     private UserToken userToken;
     private int deadUser_id;
 
+    public WrapperUserTokenVote() {
+    }
+
+    public WrapperUserTokenVote(UserToken userToken, int deadUser_id) {
+        this.userToken = userToken;
+        this.deadUser_id = deadUser_id;
+    }
+    
+    
+
     public UserToken getUserToken() {
         return userToken;
     }

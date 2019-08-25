@@ -5,6 +5,7 @@ import eestec.thessaloniki.palermo.rest.user_to_game.UserToGameService;
 import eestec.thessaloniki.palermo.rest.vote.Vote;
 import eestec.thessaloniki.palermo.rest.vote.VoteService;
 import eestec.thessaloniki.palermo.wrappers.WrapperUserTokenVote;
+import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.List;
 import javax.inject.Inject;
@@ -24,27 +25,37 @@ public class VotingState {
     @Inject
     UserToGameService userToGameService;
 
-   private final  java.util.Random random= new java.util.Random();
+    private final SecureRandom random = new SecureRandom();
 
+    /**
+     * This is what happens the first time that we start the voting. All users will be added with 0 votes in the vote table
+     * @param game_id 
+     */
     public void initliazeVoteState(int game_id) {
         voteService.deleteVotes(game_id);
-        for (UserToGame utg : userToGameService.userToGameList(game_id)) {
+        List<UserToGame> userToGames=userToGameService.userToGameList(game_id);
+        this.initlializeUserToGame(userToGames);
+        this.insertCandidates(userToGames,game_id);
+        this.chooseNextToVote(game_id);
+    }
+
+    private void insertCandidates(List<UserToGame> utgs, int game_id){
+        for (UserToGame utg:utgs){
+            voteService.insert(new Vote(game_id, utg.getUser_id(), 0));
+        }
+    }
+    
+    private void initlializeUserToGame(List<UserToGame> utgs){
+        for (UserToGame utg : utgs ) {
             utg.setIs_voting(false);
             utg.setHas_vote(false);
             userToGameService.update(utg);
         }
-        this.chooseNextToVote(game_id);
     }
-
-    /**
-     * Make a vote
-     *
-     * @param vote
-     * @return
-     */
+    
     public Response vote(WrapperUserTokenVote userTokenVote) {
         UserToGame utg = userToGameService.findByUserId(userTokenVote.getUserToken().getUser_id());
-        voteService.insert(new Vote(utg.getGame_id(), utg.getUser_id(), userTokenVote.getDeadUser_id()));
+        voteService.voted(userTokenVote.getDeadUser_id());
         this.chooseNextToVote(utg.getGame_id());
         return Response.ok().build();
 
@@ -54,12 +65,36 @@ public class VotingState {
         JsonObjectBuilder JsonObjectBuilder = Json.createObjectBuilder();
         JsonArrayBuilder jsonVotes = Json.createArrayBuilder();
         for (Vote v : voteService.getCurrentVotes(game_id)) {
-            jsonVotes.add(Json.createObjectBuilder().add("user_id", v.getUser_id()).add("deadUser_id", v.getDead_user_id()));
+            jsonVotes.add(Json.createObjectBuilder().add("user_id", v.getUser_id()).add("votes", v.getVotes()));
         }
         JsonObjectBuilder.add("votes", jsonVotes.build());
         JsonObjectBuilder.add("whoIsVoting", userToGameService.getWhoIsVoting(game_id).getUser_id());
         JsonObjectBuilder.add("is_voting_over", userToGameService.isVotingOver(game_id));
         return Response.ok(JsonObjectBuilder.build()).build();
+    }
+    
+    private void whenVoteEnds(int game_id){
+        List<Vote> votes = voteService.getCurrentVotes(game_id);
+        int countSameVotes=1;
+        for(int i=1;i<votes.size();i++){
+            if(votes.get(0).getVotes()==votes.get(i).getVotes()){
+                countSameVotes++;
+            }
+        }
+        if(countSameVotes==votes.size()){//then we will choose with random who is going to die
+            //kill them all
+        }else{// we will keep the first countSameVotes and add them to the votes again, if it is 1 then we kill him
+            if(countSameVotes==1){ // one has the most 
+                //kill this one
+            }else{// initialize the voting again
+                
+            }
+        }
+        // delete the votes
+    }
+    
+    private void killThemAll(List<Vote> votes){
+        return;
     }
 
     /**
@@ -77,23 +112,24 @@ public class VotingState {
             if (utgs.get(0).isHas_vote()) {// we are at the last
                 return false;
             } else {// we are at the first time
-                utg = utgs.get(random.nextInt(utgs.size() - 1));
+                utg = utgs.get(random.nextInt(utgs.size() ));
                 utg.setIs_voting(true);
                 userToGameService.update(utg);
                 return true;
             }
-        }
-        utg.setHas_vote(true);
-        utg.setIs_voting(false);
-        userToGameService.update(utg);
-        utgs = this.getUsersHaventVote(utgs);
-        if (utgs.size() > 0) {
-            utg = utgs.get(random.nextInt(utgs.size() - 1));
-            utg.setIs_voting(true);
+        } else {
+            utg.setHas_vote(true);
+            utg.setIs_voting(false);
             userToGameService.update(utg);
-            return true;
-        }else{
-            return false; // this will determin who is about to die
+            utgs = this.getUsersHaventVote(userToGameService.userToGameList(game_id));
+            if (utgs.size() > 0) {
+                utg = utgs.get(random.nextInt(utgs.size() ));
+                utg.setIs_voting(true);
+                userToGameService.update(utg);
+                return true;
+            } else {
+                return false; // this will determin who is about to die
+            }
         }
 
     }
@@ -107,5 +143,5 @@ public class VotingState {
         }
         return haventVote;
     }
-    
-   }
+
+}

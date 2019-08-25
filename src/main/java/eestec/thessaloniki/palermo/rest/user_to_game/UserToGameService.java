@@ -135,13 +135,10 @@ public class UserToGameService {
     }
 
     public boolean isVotingOver(int game_id) {
-        try {
-            entityManager.createQuery("SELECT utg FROM UserToGame utg WHERE"
-                    + " utg.game_id = :game_id and utg.is_voting = :is_voting", UserToGame.class)
-                    .setParameter("game_id", game_id).setParameter("is_voting", true).getResultList();
-            return false;
-        } catch (NoResultException e) {
+        if(this.getWhoIsVoting(game_id)==null){
             return true;
+        }else{
+            return false;
         }
     }
 }
