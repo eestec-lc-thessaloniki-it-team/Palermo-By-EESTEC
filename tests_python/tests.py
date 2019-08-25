@@ -10,7 +10,7 @@ username1 = "test2"
 password = "1234"
 username2 = "test3"
 username3 = "test4"
-#
+
 testCreateUser(serverIP, username1, password)
 userToken = testLogIn(serverIP, username1, password)
 deletingUser(serverIP, username1, password)

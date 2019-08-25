@@ -37,7 +37,7 @@ public class Game {
         this.created_date = Timestamp.valueOf(LocalDateTime.now());
         this.is_game_over = false;
         started = false;
-        state = "Night";
+        state = "Voting"; // the first time it will go back to night
     }
 
     public void generateRandomId() {

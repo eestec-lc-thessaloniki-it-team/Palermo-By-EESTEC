@@ -7,6 +7,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.TransactionRequiredException;
 
 public class VoteService {
 
@@ -40,9 +41,14 @@ public class VoteService {
     }
     
     public void deleteVotes(int game_id){
+        try{
         entityManager.createQuery("DELETE FROM Vote v WHERE v.game_id= :game_id")
                 .setParameter("game_id", game_id).executeUpdate();
+        }catch(TransactionRequiredException e){
+            System.out.println("This is the first time we come here");
+        }
     }
+    
 
     private int getDead(List<Integer> users_id) {
         Map<Integer, Integer> map = new HashMap<>();

@@ -17,6 +17,19 @@ public class Vote implements Serializable {
     @NotNull
     private int dead_user_id;
 
+    public Vote() {
+    }
+
+    public Vote(int game_id, int user_id, int dead_user_id) {
+        this.game_id = game_id;
+        this.user_id = user_id;
+        this.dead_user_id = dead_user_id;
+    }
+    
+    
+    
+    
+
     public int getGame_id() {
         return game_id;
     }

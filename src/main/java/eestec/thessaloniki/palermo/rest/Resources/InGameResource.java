@@ -4,7 +4,7 @@ import eestec.thessaloniki.palermo.annotations.interceptors.AuthorizedUser;
 import eestec.thessaloniki.palermo.annotations.interceptors.GameExists;
 import eestec.thessaloniki.palermo.annotations.interceptors.Leader;
 import eestec.thessaloniki.palermo.game.states.ChangeStates;
-import eestec.thessaloniki.palermo.game.states.NightService;
+import eestec.thessaloniki.palermo.game.states.NightState;
 import eestec.thessaloniki.palermo.rest.game.Game;
 import eestec.thessaloniki.palermo.rest.game.GameService;
 import eestec.thessaloniki.palermo.rest.user_to_game.UserToGame;
@@ -30,7 +30,7 @@ public class InGameResource {
     
     @Inject  GameService gameService;
     @Inject UserToGameService userToGameService;
-    @Inject  NightService nightService;    
+    @Inject  NightState nightService;    
     @Inject ChangeStates changeStates;
     
     @Path("info")
@@ -49,12 +49,7 @@ public class InGameResource {
     @Leader
     //check if you can change the state
     public Response changeState(UserToken userToken){ 
-        UserToGame userToGame = userToGameService.findByUserId(userToken.getUser_id());
-        Game game =gameService.searchGameByGameID(userToGame.getGame_id());
-        game.nextState();
-        gameService.updateGame(game);
-        changeStates.changeStateTo(game.getState(), userToGame);
-        return Response.ok(gameService.searchGameByGameID(userToGame.getGame_id())).build();
+        return changeStates.changeState(userToken);
         
     }
     

@@ -1,9 +1,9 @@
-package eestec.thessaloniki.palermo.game.game_logic;
+package eestec.thessaloniki.palermo.rest.user_token;
 
 import eestec.thessaloniki.palermo.GeneralTestMethods;
 import eestec.thessaloniki.palermo.rest.connectors.GameConnector;
 import eestec.thessaloniki.palermo.rest.user_to_game.UserToGame;
-import eestec.thessaloniki.palermo.rest.user_token.UserToken;
+import eestec.thessaloniki.palermo.rest.user_to_game.UserToGameService;
 import java.util.List;
 import javax.inject.Inject;
 import org.jboss.arquillian.container.test.api.Deployment;
@@ -18,13 +18,18 @@ import org.junit.Before;
 import org.junit.runner.RunWith;
 
 @RunWith(Arquillian.class)
-public class WhoDiedTest {
-    
+public class UserTokenServiceTest {
+
     @Inject
     GeneralTestMethods testMethods;
     @Inject
     GameConnector gameConnector;
-
+    @Inject
+    UserToGameService userToGameService;
+    
+    private List<UserToken> userTokens ;
+    private List<UserToGame> userToGames;
+    
     @Deployment
     public static WebArchive createDeployment() {
         return ShrinkWrap.create(WebArchive.class, "test.war")
@@ -35,30 +40,23 @@ public class WhoDiedTest {
                 .addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml");
     }
 
-    @Before
+      @Before
     public void initializeTest() {
-        List<UserToken> userTokens = testMethods.connectUsers();
-        List<UserToGame> userToGames = testMethods.createStartGame(userTokens);
-        System.out.println(userToGames.toString());
+        userTokens= testMethods.connectUsers();
+        userToGames = testMethods.createStartGame(userTokens);
+        
 
     }
 
     @After
     public void finalizeTest() {
-        List<UserToken> userTokens=testMethods.connectUsers();
         testMethods.logoutFromGame(userTokens);
         gameConnector.endGame(userTokens.get(0));
     }
-
-    @Test
-    public void test() {
-        assertTrue(true);
-    }
     
     @Test
-    public void testRoles(){
-        //This will test if all roles are connected
+    public void testGetWhoIsVoting(){
+        assertNull(userToGameService.getWhoIsVoting(userToGames.get(0).getGame_id()));
     }
-
 
 }

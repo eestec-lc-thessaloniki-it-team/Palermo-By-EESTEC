@@ -15,7 +15,7 @@ import javax.ws.rs.core.Response;
  *
  * This will be responsible for events that will take place in night state
  */
-public class NightService {
+public class NightState {
 
     @Inject
     UserToGameService userToGameService;
@@ -64,6 +64,24 @@ public class NightService {
         } catch (NullPointerException e) {
             e.printStackTrace();
             return Response.status(400).build();
+        }
+    }
+    
+        public boolean initializeNight(int game_id) {
+        try {
+            for (UserToGame utg : userToGameService.userToGameList(game_id)) {
+                if (utg.getRole_type().equals("Victim")) { //victims no need to take actions
+                    utg.setActedAtNight(true);
+                } else {
+                    utg.setActedAtNight(false);
+                }
+                utg.setVotesFromMurderers(0);
+                userToGameService.update(utg);
+            }
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
         }
     }
 
