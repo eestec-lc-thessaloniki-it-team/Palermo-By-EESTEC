@@ -5,6 +5,7 @@ import eestec.thessaloniki.palermo.rest.user_to_game.UserToGameService;
 import eestec.thessaloniki.palermo.rest.vote.Vote;
 import eestec.thessaloniki.palermo.rest.vote.VoteService;
 import eestec.thessaloniki.palermo.wrappers.WrapperUserTokenVote;
+import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.List;
 import javax.inject.Inject;
@@ -24,7 +25,7 @@ public class VotingState {
     @Inject
     UserToGameService userToGameService;
 
-   private final  java.util.Random random= new java.util.Random();
+    private final SecureRandom random = new SecureRandom();
 
     public void initliazeVoteState(int game_id) {
         voteService.deleteVotes(game_id);
@@ -77,23 +78,24 @@ public class VotingState {
             if (utgs.get(0).isHas_vote()) {// we are at the last
                 return false;
             } else {// we are at the first time
-                utg = utgs.get(random.nextInt(utgs.size() - 1));
+                utg = utgs.get(random.nextInt(utgs.size() ));
                 utg.setIs_voting(true);
                 userToGameService.update(utg);
                 return true;
             }
-        }
-        utg.setHas_vote(true);
-        utg.setIs_voting(false);
-        userToGameService.update(utg);
-        utgs = this.getUsersHaventVote(utgs);
-        if (utgs.size() > 0) {
-            utg = utgs.get(random.nextInt(utgs.size() - 1));
-            utg.setIs_voting(true);
+        } else {
+            utg.setHas_vote(true);
+            utg.setIs_voting(false);
             userToGameService.update(utg);
-            return true;
-        }else{
-            return false; // this will determin who is about to die
+            utgs = this.getUsersHaventVote(userToGameService.userToGameList(game_id));
+            if (utgs.size() > 0) {
+                utg = utgs.get(random.nextInt(utgs.size() ));
+                utg.setIs_voting(true);
+                userToGameService.update(utg);
+                return true;
+            } else {
+                return false; // this will determin who is about to die
+            }
         }
 
     }
@@ -107,5 +109,5 @@ public class VotingState {
         }
         return haventVote;
     }
-    
-   }
+
+}

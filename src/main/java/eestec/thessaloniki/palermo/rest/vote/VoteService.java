@@ -8,7 +8,9 @@ import java.util.Map.Entry;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TransactionRequiredException;
+import javax.transaction.Transactional;
 
+@Transactional
 public class VoteService {
 
     @PersistenceContext

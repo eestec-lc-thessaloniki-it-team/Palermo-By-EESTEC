@@ -25,6 +25,44 @@ public class Vote implements Serializable {
         this.user_id = user_id;
         this.dead_user_id = dead_user_id;
     }
+
+    @Override
+    public String toString() {
+        return "Vote{" + "game_id=" + game_id + ", user_id=" + user_id + ", dead_user_id=" + dead_user_id + '}';
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 5;
+        hash = 29 * hash + this.game_id;
+        hash = 29 * hash + this.user_id;
+        hash = 29 * hash + this.dead_user_id;
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final Vote other = (Vote) obj;
+        if (this.game_id != other.game_id) {
+            return false;
+        }
+        if (this.user_id != other.user_id) {
+            return false;
+        }
+        if (this.dead_user_id != other.dead_user_id) {
+            return false;
+        }
+        return true;
+    }
     
     
     

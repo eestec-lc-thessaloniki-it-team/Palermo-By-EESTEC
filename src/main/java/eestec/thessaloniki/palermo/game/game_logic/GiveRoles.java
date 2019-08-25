@@ -3,6 +3,7 @@ package eestec.thessaloniki.palermo.game.game_logic;
 import eestec.thessaloniki.palermo.game.ReadConfiguration;
 import eestec.thessaloniki.palermo.rest.user_to_game.UserToGame;
 import eestec.thessaloniki.palermo.rest.user_to_game.UserToGameService;
+import java.security.SecureRandom;
 import java.util.Collections;
 import java.util.List;
 import javax.inject.Inject;
@@ -26,7 +27,7 @@ public class GiveRoles {
 
     private boolean giveRoleToPlayers(String[] rolesFromConfiguration, List<UserToGame> users_id) {
         System.out.println("I want to give roles, these are the roles...");
-        Collections.shuffle(users_id);
+        Collections.shuffle(users_id, new SecureRandom());
         
         int counter = 1;
         try {
