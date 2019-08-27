@@ -1,4 +1,4 @@
-package eestec.thessaloniki.palermo.security;
+package eestec.thessaloniki.palermo.interceptorsCode;
 
 import eestec.thessaloniki.palermo.annotations.interceptors.AuthorizedUser;
 import eestec.thessaloniki.palermo.rest.user.User;

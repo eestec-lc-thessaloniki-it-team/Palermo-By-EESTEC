@@ -25,6 +25,15 @@ public class User {
     @NotEmpty(message = "Password should be set")
     private String password;
 
+    public User() {
+    }
+
+    public User(String username, String password) {
+        this.username = username;
+        this.password = password;
+    }
+
+    
 
     @PrePersist
     public void init(){

@@ -1,0 +1,59 @@
+#This file will give instructions on how to use the rest
+
+base=ip:8080/api/v1/
+
+#Use accounts
+user/newUser	needs:json(username,password) status:(400 if incomplete data, 406 if username already exists and 200 if everythink works fine) 	returns:(user_id,userToken)
+user/logIn	needs:json(username,password) status:(400 if incomplete data, 410 if wrong combination and 200 if OK)				returns:(user_id,userToken)
+user/logOut	needs:json(user_id,token) status:(401 if anauthorized, 500 if server collapses and 200 if OK)				returns:
+user/deleteUser	needs:json(user_id,token) status:(401 if anauthorized, 500 if server collapses and 200 if OK)				returns:
+
+#When a user is connected should be able to create or join a game
+game/newGame	needs:json(user_id,token)	status:(500 if server collapses or 200 OK)			returns:(id,leader_id,started,random_id,created_date,state,is_game_over)
+game/joinGame/{random_id} needs:json(user_id,token) status:(401,400 if game is not avaliable, 500 collapse and 200 ok) returns:(id,leader_id,started,random_id,created_date,state,is_game_over) 
+
+#While users they will have to ask for 2 things, the state of the game and the users in game
+game/getUsers needs:json(user_id,token)	status:(401,400 if game is not avaliable, 500 collapse and 200 ok) returns:json(users:[user_id,username])
+game/gameInfo needs:json(user_id,token)	status:(401,400 if game is not avaliable, 500 collapse and 200 ok) returns:(id,leader_id,started,random_id,created_date,state,is_game_over)
+
+#If leader wants to end the game
+game/endGame needs:json(user_id,token)	status:(401,400 if game is not avaliable, 500 collapse, and 200 ok) 	returns:
+
+#When all the people have arrived the person that created the game can start it
+game/startGame needs:json(user_id,token)	status:(401,400 if game is not avaliable, 500 collapse, 505 couldnt give roles and 200 ok) returns:gameObject
+
+--At this point the rest of the users that asking for game info, they will get started = true and the game will start -> ingame resource
+
+#Once they get started=true al players will make 2 requests depending on their role
+ingame/roleInfo needs:json(user_id,token) 	status:(401,510 if there was a problem with role,200 ok)	returns:(roleName,roleTeam,description) [murders will have "murderers":[user_id])
+ingame/allRoles needs:json(user_id,token)	status:(401,500,200)						returns:[role1,role2,role3...]
+
+#After that because it is night every role has a chance to act
+#Victim 
+ingame/act 	needs:json("userToken":(user_id,token), "ids": [user_id1,...] nothing will happen here
+#Policeman
+ingame/act 	needs:json("userToken":(user_id,token), "ids": [user_id1,...] return: (isMurderer: boolean) depends if the first id belongs to a murderer or not
+#Murderer	
+ingame/act	needs:json("userToken":(user_id,token), "ids": [user_id1,...] return: [[user_id,votes][...]] how many votes does evey person has
+ingame/nightInfo needs:json(user_id,token)  return: [[user_id,votes][...]] how many votes does evey person has
+
+#At the end the person who has more votes will die, or one will die by luck they have not aggree
+
+#After they have vote all the players will keep requesting for the state of the game.
+ingame/state 	needs:json(user_id,token)	return:(state,is_game_over,won) the last on will be filled if is game over becomes true
+
+#The leader of the game is responsible for giving an end to this state
+ingame/nextState 	needs:json(user_id,token)	return:gameObject  while changing state the game calculates if the game is over and who won
+
+#People will keep informing for the state by the state request
+#In the morning state there is nothing to be done, one more time the leader has to change the state
+
+#Voting state, this is the state that everyone in the game has to vote. Not all people are avaliable to vote. In the beggining everyone is avaliable, but if 2 or 3 of them come up with the same amount
+#of votes, the next voting will be for them. getVotes will be used continuously and when the whoIsVoting becomes equal to players usesr_id then he can use the vote endpoint
+ingame/getVotes needs:json(user_id,token)	returns:(votes,whoIsVoting,is_voting_over)
+ingame/vote	needs:json(userToken(user_id,token),deadUser_id)	return (200)
+
+#when is_voting_over becomes true, the leader can use the change state to become night again. Again checks will take place if the game is over and people can notify by the state endpoint
+
+
+

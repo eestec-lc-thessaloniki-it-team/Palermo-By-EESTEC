@@ -61,8 +61,7 @@ public class MurdererRole extends Role {
         User u;
         JsonArrayBuilder jsonUsersBuilder = Json.createArrayBuilder();
         for (UserToGame utg : userToGameService.getAllPlayesOfType(this.roleName, game_id)) {
-            u = userService.findUserById(utg.getUser_id());
-            jsonUsersBuilder.add(Json.createObjectBuilder().add("user_id", u.getId()).add("username", u.getUsername()));
+            jsonUsersBuilder.add(Json.createObjectBuilder().add("user_id", utg.getUser_id()));
         }
         return jsonUsersBuilder.build();
     }
@@ -70,7 +69,7 @@ public class MurdererRole extends Role {
     private JsonArray getMurdererVotes(int game_id) {
         JsonArrayBuilder jsonVotesBuilder = Json.createArrayBuilder();
         for (UserToGame utg : userToGameService.userToGameList(game_id)) {
-            jsonVotesBuilder.add(Json.createObjectBuilder().add("user_id", utg.getUser_id()).add("username", userService.findUserById(utg.getUser_id()).getUsername()).add("votes", utg.getVotesFromMurderers()));
+            jsonVotesBuilder.add(Json.createObjectBuilder().add("user_id", utg.getUser_id()).add("votes", utg.getVotesFromMurderers()));
         }
         return jsonVotesBuilder.build();
     }
