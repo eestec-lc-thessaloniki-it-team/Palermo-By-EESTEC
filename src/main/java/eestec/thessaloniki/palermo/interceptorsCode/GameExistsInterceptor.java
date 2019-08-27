@@ -1,4 +1,4 @@
-package eestec.thessaloniki.palermo.security;
+package eestec.thessaloniki.palermo.interceptorsCode;
 
 import eestec.thessaloniki.palermo.annotations.interceptors.GameExists;
 import eestec.thessaloniki.palermo.rest.Resources.implementation.GameResourceImp;
@@ -7,8 +7,6 @@ import eestec.thessaloniki.palermo.rest.game.GameService;
 import eestec.thessaloniki.palermo.rest.user_to_game.UserToGameService;
 import eestec.thessaloniki.palermo.rest.user_token.UserToken;
 import eestec.thessaloniki.palermo.wrappers.WrapperUserTokenListIds;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.annotation.Priority;
 import javax.inject.Inject;
 import javax.interceptor.AroundInvoke;

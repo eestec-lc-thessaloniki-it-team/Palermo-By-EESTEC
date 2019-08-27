@@ -1,4 +1,4 @@
-package eestec.thessaloniki.palermo.security;
+package eestec.thessaloniki.palermo.interceptorsCode;
 
 import eestec.thessaloniki.palermo.rest.game.Game;
 import eestec.thessaloniki.palermo.rest.game.GameService;

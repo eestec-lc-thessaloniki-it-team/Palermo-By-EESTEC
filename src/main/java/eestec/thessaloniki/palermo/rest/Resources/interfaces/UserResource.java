@@ -1,7 +1,5 @@
 package eestec.thessaloniki.palermo.rest.Resources.interfaces;
 
-import eestec.thessaloniki.palermo.annotations.interceptors.AuthorizedUser;
-import eestec.thessaloniki.palermo.annotations.interceptors.UserExists;
 import eestec.thessaloniki.palermo.rest.user.User;
 import eestec.thessaloniki.palermo.rest.user_token.UserToken;
 import java.util.List;

@@ -59,7 +59,10 @@ public class VotingState {
 
     public Response vote(WrapperUserTokenVote userTokenVote) {
         UserToGame utg = userToGameService.findByUserId(userTokenVote.getUserToken().getUser_id());
-        voteService.voted(userTokenVote.getDeadUser_id());
+        
+        if(voteService.voted(userTokenVote.getDeadUser_id())==null){ //in case try to vote someone that is not in the list
+            return Response.status(406).build();
+        }
         if (!this.chooseNextToVote(utg.getGame_id())) {
             this.whenVoteEnds(utg.getGame_id());
         }

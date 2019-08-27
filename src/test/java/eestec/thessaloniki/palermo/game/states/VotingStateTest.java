@@ -14,6 +14,7 @@ import java.util.List;
 import java.util.Random;
 import javax.inject.Inject;
 import org.jboss.arquillian.container.test.api.Deployment;
+import org.jboss.arquillian.container.test.api.RunAsClient;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.asset.EmptyAsset;
@@ -174,7 +175,7 @@ public class VotingStateTest {
         assertEquals(true, deadUsers.get(0).isIsDeadVisible());
         assertEquals(true, deadUsers.get(1).isIsDeadVisible());
     }
-
+    
     private UserToken findUserToken(UserToGame utg) {
         for (UserToken ut : userTokens) {
             if (ut.getUser_id() == utg.getUser_id()) {

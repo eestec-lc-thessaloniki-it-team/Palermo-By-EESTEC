@@ -4,6 +4,7 @@ import eestec.thessaloniki.palermo.game.game_logic.GiveRoles;
 import eestec.thessaloniki.palermo.game.states.ChangeStates;
 import eestec.thessaloniki.palermo.rest.game.Game;
 import eestec.thessaloniki.palermo.rest.game.GameService;
+import eestec.thessaloniki.palermo.rest.user.User;
 import eestec.thessaloniki.palermo.rest.user.UserService;
 import eestec.thessaloniki.palermo.rest.user_to_game.UserToGame;
 import eestec.thessaloniki.palermo.rest.user_to_game.UserToGameService;
@@ -12,6 +13,10 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
+import javax.json.Json;
+import javax.json.JsonArray;
+import javax.json.JsonArrayBuilder;
+import javax.json.JsonObjectBuilder;
 import javax.ws.rs.core.Response;
 
 /**
@@ -54,11 +59,14 @@ public class GameConnector {
     public Response getUsersInGame(UserToken userToken) {
         Game game = this.findGame(userToken.getUser_id());
         List<UserToGame> users_id = userToGameService.userToGameList(game.getId());
-        List<String> usersList = new ArrayList<>();
+        JsonObjectBuilder jsonObjectBuilder=Json.createObjectBuilder();
+        JsonArrayBuilder jsonArray=Json.createArrayBuilder();
         for (UserToGame utg : users_id) {
-            usersList.add(userService.findUserById(utg.getUser_id()).getUsername());
+            User u=userService.findUserById(utg.getUser_id());
+            jsonArray.add(Json.createObjectBuilder().add("user_id", u.getId()).add("username", u.getUsername()));
         }
-        return Response.ok(usersList).build();
+        jsonObjectBuilder.add("users", jsonArray.build());
+        return Response.ok(jsonObjectBuilder.build()).build();
     }
 
     public Response endGame(UserToken userToken) {

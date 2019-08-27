@@ -29,6 +29,7 @@ public class GameResourceImp implements GameResource{
     }
 
     @Override
+    @Leader
     public Response endGame(UserToken userToken) {
         return gameConnector.endGame(userToken);
     }

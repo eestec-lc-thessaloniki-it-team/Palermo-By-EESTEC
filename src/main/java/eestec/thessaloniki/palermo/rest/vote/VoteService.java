@@ -38,10 +38,15 @@ public class VoteService {
         }
     }
 
-    public void voted(int user_Id) {
+    public Vote voted(int user_Id) {
+        try{
         Vote vote = entityManager.find(Vote.class, user_Id);
         vote.setVotes(vote.getVotes() + 1);
         entityManager.merge(vote);
+        return vote;
+        }catch(Exception e){
+            return null;
+        }
     }
 
 }
