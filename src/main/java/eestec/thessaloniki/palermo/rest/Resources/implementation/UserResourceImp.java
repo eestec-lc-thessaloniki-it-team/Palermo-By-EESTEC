@@ -1,9 +1,10 @@
-package eestec.thessaloniki.palermo.rest.Resources;
+package eestec.thessaloniki.palermo.rest.Resources.implementation;
 
 import eestec.thessaloniki.palermo.annotations.interceptors.AuthorizedUser;
 import eestec.thessaloniki.palermo.annotations.interceptors.UserExists;
 import eestec.thessaloniki.palermo.game.game_logic.GiveRoles;
 import eestec.thessaloniki.palermo.game.roles.Roles;
+import eestec.thessaloniki.palermo.rest.Resources.interfaces.UserResource;
 import eestec.thessaloniki.palermo.rest.user.User;
 import eestec.thessaloniki.palermo.rest.user.UserService;
 import eestec.thessaloniki.palermo.rest.user_to_game.UserToGameService;
@@ -11,18 +12,10 @@ import eestec.thessaloniki.palermo.rest.user_token.UserToken;
 import eestec.thessaloniki.palermo.rest.user_token.UserTokenService;
 import java.util.List;
 import javax.inject.Inject;
-import javax.ws.rs.Consumes;
-import javax.ws.rs.GET;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
-import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-@Path("user")
-@Consumes(MediaType.APPLICATION_JSON)
-@Produces(MediaType.APPLICATION_JSON)
-public class UserResource {
+
+public class UserResourceImp implements UserResource {
 
     @Inject
     UserService userService;
@@ -30,16 +23,14 @@ public class UserResource {
     UserTokenService userTokenService;
     @Inject
     UserToGameService userToGameService;
-    
-  
+
     @Inject
     Roles roles;
-    
+
     @Inject
     GiveRoles giveRoles;
 
-    @Path("newUser")
-    @POST
+    @Override
     @UserExists
     public Response createUser(User user) {
         userService.createUser(user);
@@ -47,8 +38,7 @@ public class UserResource {
         return Response.ok(userToken).build();
     }
 
-    @Path("logIn")
-    @POST
+    @Override
     @AuthorizedUser
     public Response logInUser(User user) {
         User u = userService.findUser(user);
@@ -56,12 +46,11 @@ public class UserResource {
 
     }
 
-    @Path("logOut")
-    @POST
+    @Override
     @AuthorizedUser
     public Response logOutUser(UserToken userToken) {
         try {
-            userTokenService.deleteUserToken(userToken);            
+            userTokenService.deleteUserToken(userToken);
             userToGameService.logOutUserFromGame(userToken.getUser_id());
             return Response.ok().build();
         } catch (Exception anyException) {
@@ -70,26 +59,23 @@ public class UserResource {
         }
 
     }
-    
-    
-    @Path("deleteUser")
-    @POST
+
+    @Override
     @AuthorizedUser
-    public Response deleteUser(UserToken userToken){
-        try{
+    public Response deleteUser(UserToken userToken) {
+        try {
             userTokenService.deleteUserToken(userToken);
             userToGameService.logOutUserFromGame(userToken.getUser_id());
             userService.removeUser(userToken.getUser_id());
             return Response.ok().build();
-        }catch(Exception exception){
+        } catch (Exception exception) {
             System.out.println("Problem with deleting user");
             exception.printStackTrace();
             return Response.serverError().build();
         }
     }
 
-    @Path("list")
-    @GET
+    @Override
     public List<User> getUsers() {
         return userService.getUsers();
     }

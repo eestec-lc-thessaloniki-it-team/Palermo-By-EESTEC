@@ -2,6 +2,8 @@ package eestec.thessaloniki.palermo.game.states;
 
 import eestec.thessaloniki.palermo.rest.user_to_game.UserToGame;
 import eestec.thessaloniki.palermo.rest.user_to_game.UserToGameService;
+import eestec.thessaloniki.palermo.rest.user_token.UserToken;
+import eestec.thessaloniki.palermo.rest.user_token.UserTokenService;
 import eestec.thessaloniki.palermo.rest.vote.Vote;
 import eestec.thessaloniki.palermo.rest.vote.VoteService;
 import eestec.thessaloniki.palermo.wrappers.WrapperUserTokenVote;
@@ -65,7 +67,8 @@ public class VotingState {
 
     }
 
-    public Response getVotes(int game_id) {
+    public Response getVotes(UserToken userToken) {
+        int game_id=userToGameService.findByUserId(userToken.getUser_id()).getGame_id();
         JsonObjectBuilder JsonObjectBuilder = Json.createObjectBuilder();
         JsonArrayBuilder jsonVotes = Json.createArrayBuilder();
         for (Vote v : voteService.getCurrentVotes(game_id)) {

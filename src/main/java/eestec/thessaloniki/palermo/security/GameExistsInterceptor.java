@@ -1,7 +1,7 @@
 package eestec.thessaloniki.palermo.security;
 
 import eestec.thessaloniki.palermo.annotations.interceptors.GameExists;
-import eestec.thessaloniki.palermo.rest.Resources.GameResource;
+import eestec.thessaloniki.palermo.rest.Resources.implementation.GameResourceImp;
 import eestec.thessaloniki.palermo.rest.game.Game;
 import eestec.thessaloniki.palermo.rest.game.GameService;
 import eestec.thessaloniki.palermo.rest.user_to_game.UserToGameService;
@@ -33,7 +33,7 @@ public class GameExistsInterceptor {
 
         if (invocationContext.getMethod().getName().equals("act")) { // we will check how we will modifie it to make act work
             return this.testAct(invocationContext);
-        } else if (invocationContext.getMethod().getDeclaringClass().equals(GameResource.class)) {
+        } else if (invocationContext.getMethod().getDeclaringClass().equals(GameResourceImp.class)) {
             return this.checkInGameResource(invocationContext);
         } else {
             UserToken userToken = (UserToken) invocationContext.getParameters()[0];

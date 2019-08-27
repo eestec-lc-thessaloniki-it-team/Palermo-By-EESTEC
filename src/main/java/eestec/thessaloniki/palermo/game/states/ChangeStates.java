@@ -11,6 +11,7 @@ import java.util.List;
 import javax.inject.Inject;
 import javax.json.Json;
 import javax.json.JsonArrayBuilder;
+import javax.json.JsonObjectBuilder;
 import javax.ws.rs.core.Response;
 
 /**
@@ -101,6 +102,18 @@ public class ChangeStates {
             e.printStackTrace();
             return false;
         }
+    }
+    
+    public Response getState(UserToken userToken){
+        UserToGame userToGame = userToGameService.findByUserId(userToken.getUser_id());
+        Game game = gameService.searchGameByGameID(userToGame.getGame_id());
+        JsonObjectBuilder jsonObjectBuilder = Json.createObjectBuilder()
+                .add("state", game.getState());
+        jsonObjectBuilder.add("is_game_over", game.isIs_game_over());
+        if (game.isIs_game_over()) {
+            jsonObjectBuilder.add("won", userToGameService.getWhoWon(game.getId()));
+        }
+        return Response.ok(jsonObjectBuilder.build()).build();
     }
 
     public Response getDeadPeople(UserToGame userToGame) {

@@ -23,6 +23,7 @@ public class UserExistsInterceptor {
     public Object checkIfUserExists(InvocationContext invocationContext) throws Exception{
         User user;
         User parameter;
+        System.out.println("Checking if user Exists");
         Object[] params=invocationContext.getParameters();
         for (Object param :params){
             if(param.getClass().equals(User.class)){
